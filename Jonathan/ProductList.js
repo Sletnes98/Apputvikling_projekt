@@ -45,23 +45,10 @@ let buttonSearch = document.getElementById("buttonSearch");
 buttonSearch.addEventListener("click", searchForCatagory);
 
 let search = document.getElementById("search");
+search.addEventListener("input", searchForCatagory);
 
 function searchForCatagory() {
 
-    let checkSearch = document.getElementById("container");
-
-    if (checkSearch == `${search.value}`){
-
-        console.log("Den inneholdte det!");
-
-    }
-
-    else {
-
-        console.log("Den inneholdte ikke det!");
-
-    }
-
-
+    console.log(search.value);
 
 };
