@@ -26,17 +26,15 @@ loadData();
 
 function createCatagory() {
 
-   
-
     for (let item of checkData) {
 
         let createList = document.createElement("h1");
         document.getElementById("container").appendChild(createList);
         console.log(item.category_name);
-        createList.innerHTML = item.name;
+        createList.innerHTML = item.name + " " + item.id;
 
     };
-    
+
 
 };
 
@@ -47,12 +45,22 @@ buttonSearch.addEventListener("click", searchForCatagory);
 
 let search = document.getElementById("search");
 
-
-
-
 function searchForCatagory() {
 
-    console.log(search.value);
+    let checkSearch = document.getElementById("container");
+
+    if (checkSearch == `${search.value}`){
+
+        console.log("Den inneholdte det!");
+
+    }
+
+    else {
+
+        console.log("Den inneholdte ikke det!");
+
+    }
+
 
 
 };
