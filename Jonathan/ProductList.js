@@ -1,6 +1,7 @@
 // Group Key : ABKGYB48
 
-let checkURL = "https://sukkergris.onrender.com/webshop/products?category=5&key=ABKGYB48";
+let testID = 1;
+let checkURL = `https://sukkergris.onrender.com/webshop/products?category=${testID}&key=ABKGYB48`;
 let checkData;
 
 async function loadData() {
