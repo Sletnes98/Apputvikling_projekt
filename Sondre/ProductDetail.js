@@ -1,74 +1,101 @@
-// ProductDetail.js
-// Gruppe: Sukkergris, Key = ABKGYB48
-// Denne filen viser detaljer om ett produkt
+// Group Key : ABKGYB48
 
-document.addEventListener("DOMContentLoaded", function () {
+let selectedID = localStorage.getItem("selectedProductId");
+let productURL = `https://sukkergris.onrender.com/webshop/products?id=${selectedID}&key=ABKGYB48`;
+let productData;
 
-  // 1️ Finn hvor produktinformasjonen skal vises
-  const container = document.getElementById("productDetail");
+//-------------------------------------------------------------------------------------------------------------
 
-  // 2️ Hent produkt-ID fra localStorage (lagret fra ProductList)
-  const productId = localStorage.getItem("selectedProductId");
+async function loadProduct() {
 
-  if (!productId) {
-    container.innerHTML = "<p>Fant ikke produktet.</p>";
-    return;
-  }
+    try {
+        let response = await fetch(productURL);
+        productData = await response.json();
 
-  // 3️ Lag URL for å hente produktinfo fra Sukkergris-serveren
-  const url = "https://sukkergris.onrender.com/webshop/products?id=" + productId + "&key=ABKGYB48";
+        console.log(productData);
+        showProduct();
 
-  // 4️ Hent produktdata fra serveren
-  fetch(url)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      // Serveren returnerer et array, selv om vi bare henter ett produkt
-      const product = data[0];
+    } 
+    
+    catch (error) {
+        console.log("something went wrong: ", error);
+    };
 
-      // 5️ Lag HTML som viser produktet
-      let html = "";
-      html += "<h2>" + product.name + "</h2>";
-      html += "<img src='" + product.picture_url + "' alt='" + product.name + "' style='max-width:200px;'>";
-      html += "<p><strong>Kategori:</strong> " + product.category_name + "</p>";
-      html += "<p><strong>Pris:</strong> " + product.price + " kr</p>";
-      html += "<p><strong>Beskrivelse:</strong> " + product.description + "</p>";
+};
 
-      if (product.discount > 0) {
-        html += "<p>💸 Rabatt: " + product.discount + "%</p>";
-      }
+loadProduct();
 
-      if (product.in_stock) {
-        html += "<p><strong>Lagerstatus:</strong> På lager</p>";
-      } else {
-        html += "<p><strong>Lagerstatus:</strong> Utsolgt</p>";
-      }
+//-------------------------------------------------------------------------------------------------------------
 
-      html += "<button id='buyBtn'>🛒 Kjøp produkt</button>";
+function showProduct() {
 
-      container.innerHTML = html;
+    // API gir et array med ett produkt, så vi bruker første element
+    let item = productData[0];
 
-      // 6️ Når man trykker "Kjøp produkt"
-      const buyBtn = document.getElementById("buyBtn");
-      buyBtn.addEventListener("click", function () {
+    const container = document.getElementById("productDetail");
+    container.innerHTML = "";
+
+    // Lag HTML-elementer for produktinformasjon
+    let title = document.createElement("h2");
+    title.innerHTML = item.name;
+
+    let img = document.createElement("img");
+    img.src = item.picture_url;
+    img.alt = item.name;
+    img.style.maxWidth = "200px";
+
+    let category = document.createElement("p");
+    category.innerHTML = "<strong>Kategori:</strong> " + item.category_name;
+
+    let price = document.createElement("p");
+    price.innerHTML = "<strong>Pris:</strong> " + item.price + " kr";
+
+    let description = document.createElement("p");
+    description.innerHTML = "<strong>Beskrivelse:</strong> " + item.description;
+
+    // Rabatt
+    let discount = document.createElement("p");
+    if (item.discount > 0) {
+        discount.innerHTML = "💸 Rabatt: " + item.discount + "%";
+    }
+
+    // Lagerstatus
+    let stock = document.createElement("p");
+    if (item.in_stock) {
+        stock.innerHTML = "<strong>Lagerstatus:</strong> På lager";
+    } else {
+        stock.innerHTML = "<strong>Lagerstatus:</strong> Utsolgt";
+    }
+
+    // Kjøp-knapp
+    let buyBtn = document.createElement("button");
+    buyBtn.innerText = "🛒 Kjøp produkt";
+    buyBtn.addEventListener("click", function () {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        cart.push(product);
+        cart.push(item);
         localStorage.setItem("cart", JSON.stringify(cart));
         alert("Produkt lagt til i handlekurven!");
-      });
-    })
-    .catch(function (error) {
-      console.log("Feil ved henting av produkt:", error);
-      container.innerHTML = "<p>Kunne ikke laste produktdetaljer.</p>";
     });
 
-  // 7️ Navigasjonsknapper
-  document.getElementById("homeBtn").addEventListener("click", function () {
-    window.location.href = "../Jonathan/ProductList.html";
-  });
+    // Legg til alt i containeren
+    container.appendChild(title);
+    container.appendChild(img);
+    container.appendChild(category);
+    container.appendChild(price);
+    container.appendChild(description);
+    if (item.discount > 0) container.appendChild(discount);
+    container.appendChild(stock);
+    container.appendChild(buyBtn);
+}
 
-  document.getElementById("cartBtn").addEventListener("click", function () {
-    window.location.href = "../Jonathan/ShoppingCart.html";
-  });
+//-------------------------------------------------------------------------------------------------------------
+
+document.getElementById("homeBtn").addEventListener("click", function () {
+    window.location.href = "../Jonathan/ProductList.html";
 });
+
+document.getElementById("cartBtn").addEventListener("click", function () {
+    window.location.href = "../Jonathan/ShoppingCart.html";
+});
+
+//-------------------------------------------------------------------------------------------------------------
