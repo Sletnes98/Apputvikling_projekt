@@ -1,42 +1,39 @@
-// HomePage.js
 
 const API_BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
+
+let allCategories = []; // Lagrer alle kategorier etter API-kall
 
 //------------------------------------------------------
 // Hent kategorier fra API
 //------------------------------------------------------
 async function fetchCategories() {
     const url = `${API_BASE_URL}/webshop/categories?key=${GROUP_KEY}`;
-
     const response = await fetch(url);
 
     if (!response.ok) {
-        // Dette gjør at vi kan håndtere feilen i init-funksjonen
-        throw new Error("Feil ved henting av kategorier. Status: " + response.status);
+        throw new Error("Error fetching categories. Status: " + response.status);
     }
 
-    // Forventet format: array med objekter
-    const data = await response.json();
-    return data;
+    return await response.json();
 }
 
 //------------------------------------------------------
-// Tegn kategorier i DOM
+// Tegn kategorier på siden
 //------------------------------------------------------
-function renderCategories(categories) {
+function renderCategories(categoryList) {
     const container = document.getElementById("categoriesContainer");
     const messageEl = document.getElementById("message");
 
     container.innerHTML = "";
     messageEl.textContent = "";
 
-    if (!Array.isArray(categories) || categories.length === 0) {
-        messageEl.textContent = "Fant ingen kategorier.";
+    if (!Array.isArray(categoryList) || categoryList.length === 0) {
+        messageEl.textContent = "No categories found.";
         return;
     }
 
-    categories.forEach(cat => {
+    for (let cat of categoryList) {
         const card = document.createElement("article");
         card.className = "category-card";
 
@@ -47,29 +44,72 @@ function renderCategories(categories) {
         desc.textContent = cat.description;
 
         const link = document.createElement("a");
-        // Multi-page: send videre til produktside for denne kategorien
         link.href = `products.html?categoryId=${encodeURIComponent(cat.id)}`;
-        link.textContent = "Se produkter i denne kategorien";
+        link.textContent = "Show products in this category";
 
         card.appendChild(title);
         card.appendChild(desc);
         card.appendChild(link);
 
         container.appendChild(card);
+    }
+}
+
+//------------------------------------------------------
+// Filter kategorier basert på søk
+//------------------------------------------------------
+function searchForCategory() {
+    const searchInput = document.getElementById("search");
+    const value = searchInput.value.toLowerCase();
+
+    if (value === "") {
+        // tomt søk → vis alle kategorier igjen
+        renderCategories(allCategories);
+        return;
+    }
+
+    const filtered = allCategories.filter(cat =>
+        cat.category_name.toLowerCase().includes(value)
+    );
+
+    renderCategories(filtered);
+}
+
+//------------------------------------------------------
+// Koble søk + handlekurv-knapp
+//------------------------------------------------------
+function setupHomePageControls() {
+    const searchInput = document.getElementById("search");
+    const searchForm = document.getElementById("searchForm");
+    const cartButton = document.getElementById("cartButton");
+
+    // Søket filtrerer mens du skriver
+    searchInput.addEventListener("input", searchForCategory);
+
+    // Søket filtrerer når du trykker søkeknappen
+    searchForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        searchForCategory();
+    });
+
+    // Handlekurv (egen side)
+    cartButton.addEventListener("click", () => {
+        window.location.href = "cart.html";
     });
 }
 
 //------------------------------------------------------
-// Init – kjøres når siden er lastet
+// Init – kjører når siden lastes
 //------------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
-    const messageEl = document.getElementById("message");
+    setupHomePageControls();
 
     try {
-        const categories = await fetchCategories();
-        renderCategories(categories);
-    } catch (error) {
-        console.error(error);
-        messageEl.textContent = "Kunne ikke hente kategorier fra serveren. Prøv igjen senere.";
+        allCategories = await fetchCategories(); // lagre alle kategorier
+        renderCategories(allCategories); // vis dem
+    } catch (err) {
+        console.error(err);
+        document.getElementById("message").textContent =
+            "Could not load categories from server.";
     }
 });
