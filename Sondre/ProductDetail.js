@@ -39,10 +39,15 @@ function showProduct() {
     let title = document.createElement("h2");
     title.innerHTML = item.name;
 
-    let img = document.createElement("img");
-    img.src = item.picture_url;
-    img.alt = item.name;
-    img.style.maxWidth = "200px";
+    let productImage = document.createElement("img"); 
+    productImage.alt = item.name;
+
+
+     if (item.static == true) {
+            productImage.src = `https://sukkergris.onrender.com/images/GFTPOE21/large/${item.image}`;
+        } else {
+            productImage.src = `https://sukkergris.onrender.com/images/ABKGYB48/large/${item.image}`;
+        }
 
     let category = document.createElement("p");
     category.innerHTML = "<strong>Kategori:</strong> " + item.category_name;
@@ -79,7 +84,7 @@ function showProduct() {
 
     // Legg til alt i containeren
     container.appendChild(title);
-    container.appendChild(img);
+    container.appendChild(productImage);
     container.appendChild(category);
     container.appendChild(price);
     container.appendChild(description);
