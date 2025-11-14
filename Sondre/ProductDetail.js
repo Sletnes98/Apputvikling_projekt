@@ -91,7 +91,7 @@ function showProduct() {
 //-------------------------------------------------------------------------------------------------------------
 
 document.getElementById("homeBtn").addEventListener("click", function () {
-    window.location.href = "../Jonathan/ProductList.html";
+    window.location.href = "/../Jonathan/ProductList.html";
 });
 
 document.getElementById("cartBtn").addEventListener("click", function () {

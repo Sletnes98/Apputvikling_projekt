@@ -117,7 +117,7 @@ function seeProductDetail(event) {
 
     if (productDiv.id) {
         localStorage.setItem("selectedProductId", productDiv.id);
-        window.location.href = "../Sondre/ProductDetail.html";
+        window.location.href = "../../Sondre/ProductDetail.html";
     } else {
         console.log("Invalid click");
     }
