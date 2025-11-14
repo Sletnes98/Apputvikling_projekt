@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Sukkergris – Forside</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f7f7f7;
+        }
+
+        header {
+            background: #3b0b17;
+            color: white;
+            padding: 1rem 1.5rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 1.5rem auto;
+            padding: 0 1rem 2rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .category-card h2 {
+            margin: 0 0 0.4rem;
+            font-size: 1.1rem;
+        }
+
+        .category-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .category-card a {
+            display: inline-block;
+            margin-top: 0.7rem;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: #e0593c;
+        }
+
+        .message {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #b00020;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Sukkergris</h1>
+</header>
+
+<main>
+    <h2>Kategorier</h2>
+    <div id="categoriesContainer" class="categories-grid">
+        <!-- Kategorier fylles inn av script.js -->
+    </div>
+    <div id="message" class="message"></div>
+</main>
+
+<script src="script.js" defer></script>
+</body>
+</html>
