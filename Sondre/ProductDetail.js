@@ -5,6 +5,8 @@ let productURL = `https://sukkergris.onrender.com/webshop/products?id=${selected
 let productData;
 
 //-------------------------------------------------------------------------------------------------------------
+// Hent produktdata
+//-------------------------------------------------------------------------------------------------------------
 
 async function loadProduct() {
 
@@ -15,9 +17,7 @@ async function loadProduct() {
         console.log(productData);
         showProduct();
 
-    } 
-    
-    catch (error) {
+    } catch (error) {
         console.log("something went wrong: ", error);
     };
 
@@ -25,6 +25,8 @@ async function loadProduct() {
 
 loadProduct();
 
+//-------------------------------------------------------------------------------------------------------------
+// Vis produktinformasjon
 //-------------------------------------------------------------------------------------------------------------
 
 function showProduct() {
@@ -35,19 +37,21 @@ function showProduct() {
     const container = document.getElementById("productDetail");
     container.innerHTML = "";
 
-    // Lag HTML-elementer for produktinformasjon
+    //---------------------------------------------------------------
+    // Produktinfo-elementer
+    //---------------------------------------------------------------
+
     let title = document.createElement("h2");
     title.innerHTML = item.name;
 
     let productImage = document.createElement("img"); 
     productImage.alt = item.name;
 
-
-     if (item.static == true) {
-            productImage.src = `https://sukkergris.onrender.com/images/GFTPOE21/large/${item.image}`;
-        } else {
-            productImage.src = `https://sukkergris.onrender.com/images/ABKGYB48/large/${item.image}`;
-        }
+    if (item.static === true) {
+        productImage.src = `https://sukkergris.onrender.com/images/GFTPOE21/large/${item.image}`;
+    } else {
+        productImage.src = `https://sukkergris.onrender.com/images/ABKGYB48/large/${item.image}`;
+    }
 
     let category = document.createElement("p");
     category.innerHTML = "<strong>Kategori:</strong> " + item.category_name;
@@ -58,23 +62,52 @@ function showProduct() {
     let description = document.createElement("p");
     description.innerHTML = "<strong>Beskrivelse:</strong> " + item.description;
 
+    //---------------------------------------------------------------
     // Rabatt
-    let discount = document.createElement("p");
+    //---------------------------------------------------------------
+
     if (item.discount > 0) {
+        let discount = document.createElement("p");
         discount.innerHTML = "💸 Rabatt: " + item.discount + "%";
+        container.appendChild(discount);
     }
 
-    // Lagerstatus
-    let stock = document.createElement("p");
-    if (item.in_stock) {
-        stock.innerHTML = "<strong>Lagerstatus:</strong> På lager";
-    } else {
-        stock.innerHTML = "<strong>Lagerstatus:</strong> Utsolgt";
+    //---------------------------------------------------------------
+    // Rating (1–5 stjerner)
+    //---------------------------------------------------------------
+
+    if (item.rating) {
+        let rating = document.createElement("p");
+        let stars = Math.round(item.rating);
+        rating.innerHTML = "<strong>Vurdering:</strong> " + "⭐".repeat(stars);
+        container.appendChild(rating);
     }
+
+    //---------------------------------------------------------------
+    // Lagerstatus
+    //---------------------------------------------------------------
+
+    let stock = document.createElement("p");
+
+    if (item.in_stock) {
+        stock.innerHTML = "<strong>Lagerstatus:</strong> På lager (" + item.stock + " stk)";
+    } else {
+        const date = new Date(item.expected_shipped);
+        const formatted = date.toLocaleDateString("no-NO", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        });
+        stock.innerHTML = "<strong>Lagerstatus:</strong> Utsolgt – forventet levering: " + formatted;
+    }
+
+    //---------------------------------------------------------------
+    // Knapper nederst
+    //---------------------------------------------------------------
 
     // Kjøp-knapp
     let buyBtn = document.createElement("button");
-    buyBtn.innerText = "🛒 Kjøp produkt";
+    buyBtn.innerText = "Kjøp produkt";
     buyBtn.addEventListener("click", function () {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         cart.push(item);
@@ -82,23 +115,37 @@ function showProduct() {
         alert("Produkt lagt til i handlekurven!");
     });
 
-    // Legg til alt i containeren
+    // Tilbake-knapp
+    let backBtn = document.createElement("button");
+    backBtn.innerText = "Tilbake";
+    backBtn.addEventListener("click", function () {
+        window.location.href = "../Jonathan/Part_2/ProductList.html";
+    });
+
+    //---------------------------------------------------------------
+    // Legg alt inn i container
+    //---------------------------------------------------------------
+
     container.appendChild(title);
     container.appendChild(productImage);
     container.appendChild(category);
     container.appendChild(price);
     container.appendChild(description);
-    if (item.discount > 0) container.appendChild(discount);
     container.appendChild(stock);
     container.appendChild(buyBtn);
+    container.appendChild(backBtn);
 }
 
 //-------------------------------------------------------------------------------------------------------------
+// Navigasjonsknapper i header
+//-------------------------------------------------------------------------------------------------------------
 
-document.getElementById("homeBtn").addEventListener("click", function () {
-    window.location.href = "../Jonathan/Part_2/ProductList.html";
+// Hjem (Sanders forside)
+document.getElementById("homepageBtn").addEventListener("click", function () {
+    window.location.href = "../Sander/HomePage.html";
 });
 
+// Handlekurv
 document.getElementById("cartBtn").addEventListener("click", function () {
     window.location.href = "../Jonathan/ShoppingCart.html";
 });

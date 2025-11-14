@@ -1,4 +1,4 @@
-// script.js
+// HomePage.js
 
 const API_BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
