@@ -54,6 +54,9 @@ function createCatagory() {
 
     };
 
+    for (let item of checkData){
+        console.log(item.reserved_members);
+    };
 
 };
 
