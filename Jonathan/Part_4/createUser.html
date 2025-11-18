@@ -10,19 +10,25 @@
 <body>
     <h1>Create User</h1>
     <br/>
-<form id="userInfoInput" autocomplete="off">
+<form id="userInfoInput" autocomplete="off" enctype="multipart/form-data">
 
-    <input type="text" id="userName" placeholder="Username"></input>
+    <input type="text" id="userName" placeholder="Username (Email)"></input>
 
     <input type="password" id="password" placeholder="Password"></input>
 
-    <input type="text" id="email" placeholder="Email"></input>
-
     <input type="text" id="phoneNumber" placeholder="Phone Number"></input>
-    
-    
 
-    <input type="file" id="profilePicture" placeholder="Profile Picture" accept="image/*"></input>
+    <input type="text" id="fullName" placeholder="Full Name"></input>
+
+    <input type="text" id="street" placeholder="Street"></input>
+
+    <input type="text" id="city" placeholder="City"></input>
+
+    <input type="text" id="zipCode" placeholder="Zip Code"></input>
+
+    <input type="text" id="country" placeholder="Country"></input>
+
+    <input type="file" id="userProfilePicture" placeholder="Profile Picture" accept="image/*"></input>
 
 </form>
 

@@ -37,4 +37,4 @@ export function createBasicAuthString(username, password) {
   const combinedStr = `${username}:${password}`;
   const b64 = btoa(combinedStr);
   return "Basic " + b64; // stor B!
-}
+};

@@ -6,7 +6,7 @@ const groupkey = "ABKGYB48"; // <-- bytt til deres key
 
 function getToken() {
   return sessionStorage.getItem("admin_token") || "";
-}
+};
 
 //----------------------------------------------
 export async function adminLogin(username, password) {
