@@ -120,3 +120,38 @@ export async function deleteProduct(id) {
     return data;
   } catch (error) { errorHandler(error); }
 }
+
+// ======================================================
+// === SHIPPING & ORDER ENDPOINTS (Task 7 – Checkout) ====
+// ======================================================
+
+// Hent fraktmetoder (liste som brukes i steg 2 i checkout)
+export async function listShippingTypes() {
+  const url = `https://sukkergris.onrender.com/logistics/shippingtypes?key=${groupkey}`;
+  try {
+    // bruker vår sendRequest-wrapper som allerede håndterer feil
+    return await sendRequest(url);
+  } catch (error) {
+    errorHandler(error);
+    return [];
+  }
+}
+
+// Opprett ordre (steg 3 – "Place order")
+export async function addOrder(orderBody, token = null) {
+  const url = `https://sukkergris.onrender.com/webshop/orders?key=${groupkey}`;
+  const cfg = {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      ...(token ? { authorization: token } : {})
+    },
+    body: JSON.stringify(orderBody)
+  };
+  try {
+    return await sendRequest(url, cfg);
+  } catch (error) {
+    errorHandler(error);
+    throw error;
+  }
+}

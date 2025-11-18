@@ -27,3 +27,11 @@ export class Category {
     this.catDescr = apiData.description;
   }
 }
+
+// --- legg til nederst i models.js ---
+export class CartItem {
+  constructor({ product_id, name, price, qty = 1, stock = 0, expected_shipped = null }) {
+    Object.assign(this, { product_id, name, price, qty, stock, expected_shipped });
+  }
+}
+
