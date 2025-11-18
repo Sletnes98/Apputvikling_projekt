@@ -1,56 +1,26 @@
-// Hent alle input-elementene
-const userName = document.getElementById("userName");
-const password = document.getElementById("password");
-const phonenumber = document.getElementById("phoneNumber");
-const fullName = document.getElementById("fullName");
-const street = document.getElementById("street");
-const city = document.getElementById("city");
-const zipCode = document.getElementById("zipCode");
-const country = document.getElementById("country");
-const userProfilePicture = document.getElementById("userProfilePicture");
+import { createUser } from "./user.js";
 
-const submitBtn = document.getElementById("submit");
+document.getElementById("submit").addEventListener("click", async event => {
 
-async function uploadUser() {
-    const url = "https://sukkergris.onrender.com/users?key=ABKGYB48";
-    const token = "eyJhbGciOiJI";
+        const username = document.getElementById("userName").value;
+        const password = document.getElementById("password").value;
+        const fullName = document.getElementById("fullName").value;
+        const street = document.getElementById("street").value;
+        const city = document.getElementById("city").value;
+        const zipCode = document.getElementById("zipCode").value;
+        const country = document.getElementById("country").value;
+        const profilePicture = document.getElementById("profilePicture");
 
-    const formData = new FormData();
+  
+        const response = await createUser(username, password, fullName, street, city, zipCode, country, profilePicture.files[0]);
+        console.log(response);
 
-    formData.append("username", userName.value);
-    formData.append("password", password.value);
-    formData.append("phone", phonenumber.value);
-    formData.append("fullName", fullName.value);
-    formData.append("street", street.value);
-    formData.append("city", city.value);
-    formData.append("zipCode", zipCode.value);
-    formData.append("country", country.value);
-
-
-    if (userProfilePicture.files.length > 0) {
-        formData.append("profilePicture", userProfilePicture.files[0]);
-    }
-
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            body: formData
-        });
+      
 
         if (!response.ok) {
-            throw new Error("Error: " + response.status);
+            alert("Something went wrong");
+        } else {
+            window.location.href = "./listUsers.html";
         }
 
-        const data = await response.json();
-        console.log("Bruker opprettet:", data);
-
-    } catch (error) {
-        console.error("Kunne ikke sende:", error);
-    }
-}
-
-// Koble til knapp
-submitBtn.addEventListener("click", uploadUser);
+});

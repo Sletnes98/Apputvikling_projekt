@@ -36,5 +36,6 @@ export async function sendRequest(url, cfg = {}) {
 export function createBasicAuthString(username, password) {
   const combinedStr = `${username}:${password}`;
   const b64 = btoa(combinedStr);
+  console.log("Basic " + b64);
   return "Basic " + b64; // stor B!
 };
