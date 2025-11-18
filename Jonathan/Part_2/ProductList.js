@@ -55,6 +55,9 @@ function createCatagory() {
 
     };
 
+    for (let item of checkData){
+        console.log(item.reserved_members);
+    };
 
 };
 
@@ -118,7 +121,7 @@ function seeProductDetail(event) {
 
     if (productDiv.id) {
         localStorage.setItem("selectedProductId", productDiv.id);
-        window.location.href = "../../Sondre/ProductDetail.html";
+        window.location.href = "../../Sondre_PD/ProductDetail.html";
     } else {
         console.log("Invalid click");
     }

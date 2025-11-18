@@ -147,7 +147,8 @@ document.getElementById("homepageBtn").addEventListener("click", function () {
 
 // Handlekurv
 document.getElementById("cartBtn").addEventListener("click", function () {
-    window.location.href = "../Jonathan/ShoppingCart.html";
+    window.location.href = "../Sondre_SC/ShoppingCart.html";
 });
+
 
 //-------------------------------------------------------------------------------------------------------------
