@@ -1,4 +1,5 @@
 //IMPORT
+import { usersList } from "../../Jonathan/Part_4/user.js";
 
 // =======================================================
 // KONFIGURASJON
@@ -377,10 +378,29 @@ function showOrders() {
 
 function showUsers() {
   const content = document.getElementById("content");
-  content.innerHTML = `
-    <h2>Users</h2>
-    <p>Here we could manage users. Not implemented in this simplified version.</p>
-  `;
+
+  usersList.forEach(user => {
+      content.innerHTML += `
+      <h2>Users</h2>
+      
+      <div id="${user.id}">
+      
+          <img src="https://sukkergris.onrender.com/images/${groupkey}/users/${user.thumb}"/><br/>
+          User ID : ${user.id} <br/>
+          Username : ${user.username} <br/>
+          Full Name : ${user.full_name} <br/>
+          Street : ${user.street} <br/>
+          City : ${user.city} <br/>
+          Zip Code : ${user.zipcode} <br/>
+          Country : ${user.country} <br/>
+  
+      </div>
+      <br/>
+      <hr/>
+      <br/>
+  
+      `;
+  });
 }
 
 function showComments() {
