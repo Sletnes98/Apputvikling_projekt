@@ -1,25 +1,26 @@
+import { createUser } from "./user.js";
 
+document.getElementById("submit").addEventListener("click", async event => {
 
+        const username = document.getElementById("userName").value;
+        const password = document.getElementById("password").value;
+        const fullName = document.getElementById("fullName").value;
+        const street = document.getElementById("street").value;
+        const city = document.getElementById("city").value;
+        const zipCode = document.getElementById("zipCode").value;
+        const country = document.getElementById("country").value;
+        const profilePicture = document.getElementById("profilePicture");
 
-let checkURL = `https://sukkergris.onrender.com/users`;
-let checkData;
+  
+        const response = await createUser(username, password, fullName, street, city, zipCode, country, profilePicture.files[0]);
+        console.log(response);
 
-async function loadData() {
+      
 
-    try {
-        let response = await fetch(checkURL);
-        checkData = await response.json();
+        if (!response.ok) {
+            alert("Something went wrong");
+        } else {
+            window.location.href = "./listUsers.html";
+        }
 
-        console.log(checkData);
-
-
-
-    } 
-    
-    catch (error) {
-        console.log("something went wrong: ", error);
-    };
-
-};
-
-loadData();
+});

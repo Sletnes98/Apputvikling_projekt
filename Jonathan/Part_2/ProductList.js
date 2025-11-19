@@ -1,6 +1,7 @@
 const groupKey =  "ABKGYB48";
 
 let testID = 3;
+let selectedID = localStorage.getItem("selectedCategoryId");
 let checkURL = `https://sukkergris.onrender.com/webshop/products?category=${testID}&key=${groupKey}`;
 let checkData;
 
@@ -15,7 +16,6 @@ async function loadData() {
 
 
     } 
-    
     catch (error) {
         console.log("something went wrong: ", error);
     };
@@ -120,7 +120,7 @@ function seeProductDetail(event) {
 
     if (productDiv.id) {
         localStorage.setItem("selectedProductId", productDiv.id);
-        window.location.href = "../../Sondre/ProductDetail.html";
+        window.location.href = "../../Sondre_PD/ProductDetail.html";
     } else {
         console.log("Invalid click");
     }

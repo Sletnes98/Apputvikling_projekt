@@ -1,8 +1,11 @@
+// =========================================
+//  Forside script.js – FULLSTENDIG FIL
+// =========================================
 
 const API_BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
 
-let allCategories = []; // Lagrer alle kategorier etter API-kall
+let allCategories = []; // lagrer alle kategorier etter API-kall
 
 //------------------------------------------------------
 // Hent kategorier fra API
@@ -36,6 +39,7 @@ function renderCategories(categoryList) {
     for (let cat of categoryList) {
         const card = document.createElement("article");
         card.className = "category-card";
+        card.id = cat.id; // 👈 kategori-id (1–7)
 
         const title = document.createElement("h2");
         title.textContent = cat.category_name;
@@ -43,13 +47,8 @@ function renderCategories(categoryList) {
         const desc = document.createElement("p");
         desc.textContent = cat.description;
 
-        const link = document.createElement("a");
-        link.href = `products.html?categoryId=${encodeURIComponent(cat.id)}`;
-        link.textContent = "Show products in this category";
-
         card.appendChild(title);
         card.appendChild(desc);
-        card.appendChild(link);
 
         container.appendChild(card);
     }
@@ -63,50 +62,76 @@ function searchForCategory() {
     const value = searchInput.value.toLowerCase();
 
     if (value === "") {
-        // tomt søk → vis alle kategorier igjen
-        renderCategories(allCategories);
+        renderCategories(allCategories); // vis alle igjen
         return;
     }
 
     const filtered = allCategories.filter(cat =>
-        cat.category_name.toLowerCase().includes(value)
+        cat.category_name.toLowerCase().startsWith(value)
     );
 
     renderCategories(filtered);
 }
 
 //------------------------------------------------------
-// Koble søk + handlekurv-knapp
+// Klikk på kategori → gå til ProductList.html
+//------------------------------------------------------
+function setupCategoryClick() {
+    let categoriesContainer = document.getElementById("categoriesContainer");
+    categoriesContainer.addEventListener("click", seeCategoryProducts);
+}
+
+function seeCategoryProducts(event) {
+    let categoryCard = event.target.closest(".category-card");
+
+    if (!categoryCard) {
+        console.log("Invalid click");
+        return;
+    }
+
+    let categoryId = categoryCard.id;
+
+    if (categoryId) {
+        localStorage.setItem("selectedCategoryId", categoryId);
+
+        // 👇 VIKTIG: Dette er stien som funker i prosjektet ditt
+        window.location.href = "/Jonathan/Part_2/ProductList.html";
+    }
+}
+
+//------------------------------------------------------
+// Setup search + cart button
 //------------------------------------------------------
 function setupHomePageControls() {
     const searchInput = document.getElementById("search");
     const searchForm = document.getElementById("searchForm");
     const cartButton = document.getElementById("cartButton");
 
-    // Søket filtrerer mens du skriver
+    // Live-filter
     searchInput.addEventListener("input", searchForCategory);
 
-    // Søket filtrerer når du trykker søkeknappen
+    // Klikk på søk
     searchForm.addEventListener("submit", (e) => {
         e.preventDefault();
         searchForCategory();
     });
 
-    // Handlekurv (egen side)
+    // Handlekurv-knapp
     cartButton.addEventListener("click", () => {
-        window.location.href = "cart.html";
+        window.location.href = "/Cart/cart.html"; // endre hvis handlekurv ligger et annet sted
     });
 }
 
 //------------------------------------------------------
-// Init – kjører når siden lastes
+// Init
 //------------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
     setupHomePageControls();
+    setupCategoryClick();
 
     try {
-        allCategories = await fetchCategories(); // lagre alle kategorier
-        renderCategories(allCategories); // vis dem
+        allCategories = await fetchCategories();
+        renderCategories(allCategories);
     } catch (err) {
         console.error(err);
         document.getElementById("message").textContent =
