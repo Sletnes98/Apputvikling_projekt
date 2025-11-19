@@ -1,0 +1,64 @@
+/* INPUTS */
+label {
+  font-weight: bold;
+  margin-top: 12px;
+  display: block;
+}
+
+input {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* SHIPPING OPTIONS */
+.shipping-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.shipping-option:hover {
+  background-color: #f5f5f5;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.shipping-option input[type="radio"] {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.shipping-option span {
+  font-size: 1.15rem;
+}
+
+/* ACTION BUTTONS */
+.actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 14px;
+}
+
+button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+button:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}

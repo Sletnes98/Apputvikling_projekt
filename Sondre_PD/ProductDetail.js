@@ -2,153 +2,102 @@
 
 let selectedID = localStorage.getItem("selectedProductId");
 let productURL = `https://sukkergris.onrender.com/webshop/products?id=${selectedID}&key=ABKGYB48`;
-let productData;
 
 //-------------------------------------------------------------------------------------------------------------
 // Hent produktdata
 //-------------------------------------------------------------------------------------------------------------
 
 async function loadProduct() {
-
     try {
-        let response = await fetch(productURL);
-        productData = await response.json();
-
-        console.log(productData);
-        showProduct();
-
+        const response = await fetch(productURL);
+        const data = await response.json();
+        console.log(data);
+        showProduct(data[0]);
     } catch (error) {
-        console.log("something went wrong: ", error);
-    };
-
-};
+        console.log("something went wrong:", error);
+    }
+}
 
 loadProduct();
 
 //-------------------------------------------------------------------------------------------------------------
-// Vis produktinformasjon
+// Vis produktinformasjon (template style)
 //-------------------------------------------------------------------------------------------------------------
 
-function showProduct() {
-
-    // API gir et array med ett produkt, så vi bruker første element
-    let item = productData[0];
+function showProduct(item) {
 
     const container = document.getElementById("productDetail");
-    container.innerHTML = "";
 
-    //---------------------------------------------------------------
-    // Produktinfo-elementer
-    //---------------------------------------------------------------
+    // Bildelogikk
+    const imageUrl = item.static
+        ? `https://sukkergris.onrender.com/images/GFTPOE21/large/${item.image}`
+        : `https://sukkergris.onrender.com/images/ABKGYB48/large/${item.image}`;
 
-    let title = document.createElement("h2");
-    title.innerHTML = item.name;
-
-    let productImage = document.createElement("img"); 
-    productImage.alt = item.name;
-
-    if (item.static === true) {
-        productImage.src = `https://sukkergris.onrender.com/images/GFTPOE21/large/${item.image}`;
-    } else {
-        productImage.src = `https://sukkergris.onrender.com/images/ABKGYB48/large/${item.image}`;
-    }
-
-    let category = document.createElement("p");
-    category.innerHTML = "<strong>Kategori:</strong> " + item.category_name;
-
-    let price = document.createElement("p");
-    price.innerHTML = "<strong>Pris:</strong> " + item.price + " kr";
-
-    let description = document.createElement("p");
-    description.innerHTML = "<strong>Beskrivelse:</strong> " + item.description;
-
-    //---------------------------------------------------------------
-    // Rabatt
-    //---------------------------------------------------------------
-
-    if (item.discount > 0) {
-        let discount = document.createElement("p");
-        discount.innerHTML = "💸 Rabatt: " + item.discount + "%";
-        container.appendChild(discount);
-    }
-
-    //---------------------------------------------------------------
-    // Rating (1–5 stjerner)
-    //---------------------------------------------------------------
-
-    if (item.rating) {
-        let rating = document.createElement("p");
-        let stars = Math.round(item.rating);
-        rating.innerHTML = "<strong>Vurdering:</strong> " + "⭐".repeat(stars);
-        container.appendChild(rating);
-    }
-
-    //---------------------------------------------------------------
-    // Lagerstatus
-    //---------------------------------------------------------------
-
-    let stock = document.createElement("p");
-
-    if (item.in_stock) {
-        stock.innerHTML = "<strong>Lagerstatus:</strong> På lager (" + item.stock + " stk)";
-    } else {
-        const date = new Date(item.expected_shipped);
-        const formatted = date.toLocaleDateString("no-NO", {
+    // Datoformat
+    const formattedDate = item.expected_shipped
+        ? new Date(item.expected_shipped).toLocaleDateString("no-NO", {
             day: "2-digit",
             month: "long",
             year: "numeric"
-        });
-        stock.innerHTML = "<strong>Lagerstatus:</strong> Utsolgt – forventet levering: " + formatted;
-    }
+        })
+        : "";
 
-    //---------------------------------------------------------------
-    // Knapper nederst
-    //---------------------------------------------------------------
+    // Rating-stjerner
+    const ratingStars = item.rating ? "⭐".repeat(Math.round(item.rating)) : "";
 
-    // Kjøp-knapp
-    let buyBtn = document.createElement("button");
-    buyBtn.innerText = "Kjøp produkt";
-    buyBtn.addEventListener("click", function () {
+    // HTML som kompisen din ville skrevet – rent og enkelt
+    container.innerHTML = `
+        <h2>${item.name}</h2>
+
+        <img src="${imageUrl}" alt="${item.name}">
+
+        <p><strong>Kategori:</strong> ${item.category_name}</p>
+        <p><strong>Pris:</strong> ${item.price} kr</p>
+        <p><strong>Beskrivelse:</strong> ${item.description}</p>
+
+        ${item.discount > 0 ? `<p>Rabatt: ${item.discount}%</p>` : ""}
+
+        ${item.rating ? `<p><strong>Vurdering:</strong> ${ratingStars}</p>` : ""}
+
+        <p><strong>Lagerstatus:</strong> 
+            ${item.in_stock 
+                ? `På lager (${item.stock} stk)` 
+                : `Utsolgt – forventet levering: ${formattedDate}`
+            }
+        </p>
+
+        <button id="buyBtn">Kjøp produkt</button>
+        <button id="backBtn">Tilbake</button>
+    `;
+
+    //----------------------------------------------------------------------------------------
+    // KJØP-KNAPP
+    //----------------------------------------------------------------------------------------
+    document.getElementById("buyBtn").addEventListener("click", () => {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        cart.push(item);
+        cart.push({ ...item, qty: 1 });
         localStorage.setItem("cart", JSON.stringify(cart));
         alert("Produkt lagt til i handlekurven!");
     });
 
-    // Tilbake-knapp
-    let backBtn = document.createElement("button");
-    backBtn.innerText = "Tilbake";
-    backBtn.addEventListener("click", function () {
+    //----------------------------------------------------------------------------------------
+    // TILBAKE-KNAPP
+    //----------------------------------------------------------------------------------------
+    document.getElementById("backBtn").addEventListener("click", () => {
         window.location.href = "../Jonathan/Part_2/ProductList.html";
     });
-
-    //---------------------------------------------------------------
-    // Legg alt inn i container
-    //---------------------------------------------------------------
-
-    container.appendChild(title);
-    container.appendChild(productImage);
-    container.appendChild(category);
-    container.appendChild(price);
-    container.appendChild(description);
-    container.appendChild(stock);
-    container.appendChild(buyBtn);
-    container.appendChild(backBtn);
 }
 
 //-------------------------------------------------------------------------------------------------------------
-// Navigasjonsknapper i header
+// HEADER-KNAPPER
 //-------------------------------------------------------------------------------------------------------------
 
-// Hjem (Sanders forside)
-document.getElementById("homepageBtn").addEventListener("click", function () {
+document.getElementById("homepageBtn").addEventListener("click", () => {
     window.location.href = "../Sander/HomePage.html";
 });
 
-// Handlekurv
-document.getElementById("cartBtn").addEventListener("click", function () {
+document.getElementById("cartBtn").addEventListener("click", () => {
     window.location.href = "../Sondre_SC/ShoppingCart.html";
 });
-
 
 //-------------------------------------------------------------------------------------------------------------
