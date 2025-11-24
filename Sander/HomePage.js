@@ -147,3 +147,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             "Could not load categories from server.";
     }
 });
+
+//Fikser Login og Sign up knapper
+document.addEventListener("DOMContentLoaded", () => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+
+    loginBtn.addEventListener("click", () => {
+        window.location.href = "../Andreas/Login/loginUser.html";
+    });
+
+    signupBtn.addEventListener("click", () => {
+        window.location.href = "../Jonathan/Part_4/createUser.html";
+    });
+});
+

@@ -112,13 +112,60 @@
             font-size: 0.9rem;
             color: #b00020;
         }
+
+/* NAVBAR */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3a001f;
+    padding: 15px 25px;
+    color: white;
+}
+
+.logo {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+/* Knapper */
+.auth-btn {
+    background-color: #444;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.auth-btn:hover {
+    background-color: black;
+}
+
+
     </style>
 </head>
 
 <body>
 
-<header>
-    <h1>Sukkergris Webshop</h1>
+<header class="top-nav">
+    <h1 class="logo">Sukkergris Webshop</h1>
+
+    <div class="auth-buttons">
+        <button id="forumButton" class="auth-btn">Go to forum</button>
+        <button id="cartButton" class="auth-btn">Go to shopping cart</button>
+        <button id="loginBtn" class="auth-btn">Login</button>
+        <button id="signupBtn" class="auth-btn">Sign up</button>
+
+    </div>
 </header>
 
 <main>
@@ -132,14 +179,7 @@
                 placeholder="Search for category…">
             <button type="submit" class="btn-primary">Search</button>
         </form>
-
-        <button id="cartButton" class="btn-secondary">
-            Go to shopping cart
-        </button>
-
-        <button id="forumButton" class="btn-secondary">
-            Go to forum
-        </button>
+        
     </section>
 
     <!-- ---------------- CATEGORY GRID ---------------- -->
