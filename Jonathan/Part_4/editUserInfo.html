@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit User Info</title>
+
+    <link rel="stylesheet" href="../../../style.css">
+    <script type="module" src="./adminUsers.js"></script>
+    <script type="module" src="./editUserInfoView.js"></script>
+
+</head>
+<body>
+    <h1>Edit User Info</h1>
+
+    <form id="userInfoInput" autocomplete="off" enctype="multipart/form-data">
+
+    <input type="text" id="userName" placeholder="Username (Email)" class="searchBox"></input>
+
+    <input type="text" id="fullName" placeholder="Full Name" class="searchBox"></input>
+
+    <input type="text" id="street" placeholder="Street" class="searchBox"></input>
+
+    <input type="text" id="city" placeholder="City" class="searchBox"></input>
+
+    <input type="text" id="zipCode" placeholder="Zip Code" class="searchBox"></input>
+
+    <input type="text" id="country" placeholder="Country" class="searchBox"></input>
+
+    <img id="currentProfilePicture" style="max-width: 25%;">
+        <p id="noCurrentProfilePicture"></p>
+
+    <input type="file" id="profilePicture" placeholder="Profile Picture" accept="image/*"></input> 
+
+
+</form>
+<button id="commitEdit">Commit Edit</button>
+</body>
+</html>

@@ -1,0 +1,74 @@
+#userListContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: none;        /* Fjernet sentrering og breddebegrensning */
+    margin: 0;              /* Fjerner mellomrom på sidene */
+}
+
+/* Hvert brukerkort */
+.userContainer {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: 0.2s ease;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.userContainer:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.userContainer img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #ff4b4b;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    padding: 0;
+    transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #d63b3b;
+    transform: scale(1.1);
+}
+
+/* View for user form
+
+/* Søkeboks styling */
+.searchBox {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.2s ease;
+    box-sizing: border-box;
+}
+
+.searchBox:focus {
+    border-color: #888;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.15);
+}

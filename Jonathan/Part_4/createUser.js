@@ -1,4 +1,4 @@
-import { createUser } from "./user.js";
+import { createUser } from "./userList.js";
 
 document.getElementById("submit").addEventListener("click", async event => {
 
@@ -17,10 +17,10 @@ document.getElementById("submit").addEventListener("click", async event => {
 
       
 
-        if (!response.ok) {
+      /*   if (!response.ok) {
             alert("Something went wrong");
         } else {
             window.location.href = "./listUsers.html";
-        }
+        } */
 
 });
