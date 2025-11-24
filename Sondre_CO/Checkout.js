@@ -123,16 +123,17 @@ function renderStep3(customer, shipping) {
   const total = cartTotal + shipping.price;
 
   container.innerHTML = `
-    <h3>3. Oppsummering</h3>
-
+    <h2>Oppsummering</h2>
+    <br>
     <p><strong>Kunde:</strong> ${customer.fullname}</p>
     <p><strong>Tlf:</strong> ${customer.tlfnummer}</p>
     <p><strong>E-post:</strong> ${customer.email}</p>
     <p><strong>Adresse:</strong> ${customer.street}, ${customer.zipcode} ${customer.city}, ${customer.country}</p>
 
     <h4>Varer:</h4>
+    <br>
     <ul>${itemsHtml}</ul>
-
+    <br>
     <p><strong>Frakt:</strong> ${shipping.name} (${shipping.price} kr)</p>
     <p><strong>Total:</strong> ${total} kr</p>
 
@@ -154,7 +155,7 @@ function renderStep3(customer, shipping) {
 //---------------------------------------------------------------------
 async function placeOrder(customer, shipping) {
   try {
-    // Lag orderlines
+    // Lag orderlines til API
     const orderlines = cart.map(item => ({
       product_id: item.id,
       qty: item.qty
@@ -180,13 +181,23 @@ async function placeOrder(customer, shipping) {
       body: JSON.stringify(body)
     });
 
-    const data = await resp.json();
-    console.log("ORDER OK:", data);
+    const apiData = await resp.json();
+    console.log("ORDER OK:", apiData);
 
-    // Lagre ordrenummer
-    localStorage.setItem("lastOrder", JSON.stringify(data));
+    // regn ut total basert på cart + frakt
+    const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    const total = cartTotal + shipping.price;
 
-    // Tøm handlekurv
+    // lagre både API-data + cart + total i lastOrder
+    const orderToStore = {
+      ...apiData,  // msg + record
+      cart,        // produkter med navn/pris/qty
+      total        // ferdig utregnet total
+    };
+
+    localStorage.setItem("lastOrder", JSON.stringify(orderToStore));
+
+    // Tøm handlekurv (går fint – vi har cart lagret i lastOrder nå)
     localStorage.removeItem("cart");
 
     // Gå til ordrebekreftelse
@@ -203,4 +214,8 @@ async function placeOrder(customer, shipping) {
 //---------------------------------------------------------------------
 document.getElementById("homepageBtn").addEventListener("click", () => {
   window.location.href = "../Sander/HomePage.html";
+});
+
+document.getElementById("cartBtn").addEventListener("click", () => {
+  window.location.href = "../Sondre_SC/ShoppingCart.html";
 });
