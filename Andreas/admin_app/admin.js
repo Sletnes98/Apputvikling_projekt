@@ -1,5 +1,5 @@
 //IMPORT
-import { usersList } from "../../Jonathan/Part_4/user.js";
+import { usersList } from "../../Jonathan/Part_4/userList.js";
 
 // =======================================================
 // KONFIGURASJON
