@@ -1,5 +1,5 @@
 import { usersList } from "./userList.js";
-import { groupKey } from "./adminUsers.js";
+import { deleteUser, groupKey } from "./adminUsers.js";
 
 
 console.log(usersList);
@@ -21,12 +21,25 @@ usersList.forEach(user => {
             City : ${user.city} <br/>
             Zip Code : ${user.zipcode} <br/>
             Country : ${user.country} <br/>
-            <button class="delete-btn">×</button>
+
+            <button class="delete-btn" data-id="${user.id}">×</button>
             <br/>
-            <button id="edit-btn-${user.id}" class="edit-btn">Edit User</button>
+            
         </div>
 
     `;
+    userListContainer.addEventListener("click", (event) => {
+        if (event.target.classList.contains("delete-btn")) {
+            const userId = event.target.dataset.id;
+            deleteUser(userId);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+            
+        }
+    });
 });
+
+
 
 //------------------------------------------------------------------------------------------------------------
