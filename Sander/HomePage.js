@@ -95,7 +95,7 @@ function seeCategoryProducts(event) {
         localStorage.setItem("selectedCategoryId", categoryId);
 
         // 👇 VIKTIG: Dette er stien som funker i prosjektet ditt
-        window.location.href = "/Jonathan/Part_2/ProductList.html";
+        window.location.href = "../Jonathan/Part_2/ProductList.html";
     }
 }
 
@@ -106,6 +106,8 @@ function setupHomePageControls() {
     const searchInput = document.getElementById("search");
     const searchForm = document.getElementById("searchForm");
     const cartButton = document.getElementById("cartButton");
+    const forumButton = document.getElementById("forumButton"); 
+    // ↑ NY: Henter forum-knappen på samme måte som cartButton
 
     // Live-filter
     searchInput.addEventListener("input", searchForCategory);
@@ -118,7 +120,14 @@ function setupHomePageControls() {
 
     // Handlekurv-knapp
     cartButton.addEventListener("click", () => {
-        window.location.href = "/Cart/cart.html"; // endre hvis handlekurv ligger et annet sted
+        window.location.href = "../Sondre_SC/ShoppingCart.html"; 
+        // ← Dette har du allerede
+    });
+
+    // Forum-knapp (NY)
+    forumButton.addEventListener("click", () => {
+        window.location.href = "../Sander/MessageBoard.html"; 
+        // ← Endre hvis MessageBoard.html ligger et annet sted
     });
 }
 
@@ -138,3 +147,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             "Could not load categories from server.";
     }
 });
+
+//Fikser Login og Sign up knapper
+document.addEventListener("DOMContentLoaded", () => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+
+    loginBtn.addEventListener("click", () => {
+        window.location.href = "../Andreas/Login/loginUser.html";
+    });
+
+    signupBtn.addEventListener("click", () => {
+        window.location.href = "../Jonathan/Part_4/createUser.html";
+    });
+});
+
