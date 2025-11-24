@@ -1,5 +1,7 @@
 //IMPORT
 import { usersList } from "../../Jonathan/Part_4/userList.js";
+import { deleteUser } from "../../Jonathan/Part_4/adminUsers.js";
+
 
 // =======================================================
 // KONFIGURASJON
@@ -551,11 +553,23 @@ function showUsers() {
         City : ${user.city} <br/>
         Zip Code : ${user.zipcode} <br/>
         Country : ${user.country} <br/>
+        <button class="delete-btn" data-id="${user.id}">Delete User</button>
+
       </div>
       <br/>
       <hr/>
       <br/>
     `;
+    content.addEventListener("click", (event) => {
+            if (event.target.classList.contains("delete-btn")) {
+                const userId = event.target.dataset.id;
+                deleteUser(userId);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                
+            }
+        });
   });
 
   content.innerHTML = html;
