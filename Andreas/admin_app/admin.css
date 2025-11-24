@@ -99,8 +99,8 @@ input[type="email"],
 input[type="password"],
 input[type="file"],
 textarea {
-  width: 100%;
-  padding: 10px;
+  width: 85%;
+  padding: 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
   margin: 8px 0 16px 0;
@@ -136,4 +136,57 @@ button#cancelAdd:hover, button#cancelEdit:hover {
   margin-top: 10px;
   color: red;
   font-weight: 500;
+}
+
+
+/* =========================================================
+   ORDERS – styling av ordrekort i admin
+========================================================= */
+
+.order-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  border-left: 4px solid #0055ff;
+}
+
+.order-card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.order-card p {
+  margin: 2px 0;
+  font-size: 14px;
+}
+
+.order-card p strong {
+  font-weight: 600;
+}
+
+/* Detaljer/produkter-dropdown */
+.order-card details {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.order-card summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.order-card ul {
+  margin: 8px 0 0 18px;
+  padding: 0;
+  list-style: disc;
+}
+
+.order-card li {
+  margin-bottom: 4px;
+  font-size: 14px;
 }

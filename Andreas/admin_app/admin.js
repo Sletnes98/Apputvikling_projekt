@@ -1,4 +1,5 @@
 //IMPORT
+import { usersList } from "../../Jonathan/Part_4/user.js";
 
 // =======================================================
 // KONFIGURASJON
@@ -186,26 +187,47 @@ function showAddProductForm() {
   content.innerHTML = `
     <h2>Add Product</h2>
     <form id="addForm">
-      <input name="name" placeholder="Name" required><br>
-      <input name="heading" placeholder="Heading"><br>
-      <input name="category_id" placeholder="Category ID" type="number" required><br>
-      <input name="description" placeholder="Description"><br>
+      
+      <label>Name</label>
+      <input name="name" required><br>
 
-      <label>Image file</label><br>
+      <label>Heading</label>
+      <input name="heading"><br>
+
+      <label>Category ID</label>
+      <input name="category_id" type="number" required><br>
+
+      <label>Description</label>
+      <input name="description"><br>
+
+      <label>Image file</label>
       <input name="img_file" type="file" accept="image/*"><br>
 
-      <input name="price" placeholder="Price" type="number" required><br>
-      <input name="discount" placeholder="Discount (%)" type="number"><br>
-      <input name="carbohydrates" placeholder="Carbohydrates (%)" type="number"><br>
-      <input name="fat" placeholder="Fat (%)" type="number"><br>
-      <input name="protein" placeholder="Protein (%)" type="number"><br>
-      <input name="energy" placeholder="Energy (kJ per 100g)" type="number"><br>
-      <input name="stock" placeholder="Stock" type="number"><br>
+      <label>Price</label>
+      <input name="price" type="number" required><br>
 
-      <label>Expected shipped (if stock is 0)</label><br>
+      <label>Discount (%)</label>
+      <input name="discount" type="number"><br>
+
+      <label>Carbohydrates (%)</label>
+      <input name="carbohydrates" type="number"><br>
+
+      <label>Fat (%)</label>
+      <input name="fat" type="number"><br>
+
+      <label>Protein (%)</label>
+      <input name="protein" type="number"><br>
+
+      <label>Energy (kJ per 100g)</label>
+      <input name="energy" type="number"><br>
+
+      <label>Stock</label>
+      <input name="stock" type="number"><br>
+
+      <label>Expected shipped</label>
       <input name="expected_shipped" type="date"><br>
 
-      <label>Reserved for members only?</label><br>
+      <label>Reserved for members only?</label>
       <select name="reserved_members">
         <option value="false" selected>No</option>
         <option value="true">Yes</option>
@@ -220,16 +242,12 @@ function showAddProductForm() {
 
   document.getElementById("addForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const fd = new FormData(e.target);
-    try {
-      await addProduct(fd);
-      showProducts();
-    } catch (err) {
-      alert("Could not add product: " + err.message);
-    }
+    await addProduct(fd);
+    showProducts();
   });
 }
+
 
 
 // === API: ADD PRODUCT (POST) ===
@@ -276,28 +294,49 @@ function showEditProductForm(product) {
   content.innerHTML = `
     <h2>Edit Product</h2>
     <form id="editForm">
+
       <input type="hidden" name="id" value="${product.id}">
 
-      <input name="name" placeholder="Name" value="${product.name}" required><br>
-      <input name="heading" placeholder="Heading" value="${heading}"><br>
-      <input name="category_id" type="number" placeholder="Category ID" value="${cat}" required><br>
-      <input name="description" placeholder="Description" value="${desc}"><br>
+      <label>Name</label>
+      <input name="name" value="${product.name}" required><br>
 
-      <label>New image (optional)</label><br>
+      <label>Heading</label>
+      <input name="heading" value="${heading}"><br>
+
+      <label>Category ID</label>
+      <input name="category_id" type="number" value="${cat}" required><br>
+
+      <label>Description</label>
+      <input name="description" value="${desc}"><br>
+
+      <label>New image (optional)</label>
       <input name="img_file" type="file" accept="image/*"><br>
 
-      <input name="price" type="number" placeholder="Price" value="${price}" required><br>
-      <input name="discount" type="number" placeholder="Discount (%)" value="${discount}"><br>
-      <input name="carbohydrates" type="number" placeholder="Carbohydrates (%)" value="${carbs}"><br>
-      <input name="fat" type="number" placeholder="Fat (%)" value="${fat}"><br>
-      <input name="protein" type="number" placeholder="Protein (%)" value="${protein}"><br>
-      <input name="energy" type="number" placeholder="Energy (kJ per 100g)" value="${energy}"><br>
-      <input name="stock" type="number" placeholder="Stock" value="${stock}"><br>
+      <label>Price</label>
+      <input name="price" type="number" value="${price}" required><br>
 
-      <label>Expected shipped</label><br>
+      <label>Discount (%)</label>
+      <input name="discount" type="number" value="${discount}"><br>
+
+      <label>Carbohydrates (%)</label>
+      <input name="carbohydrates" type="number" value="${carbs}"><br>
+
+      <label>Fat (%)</label>
+      <input name="fat" type="number" value="${fat}"><br>
+
+      <label>Protein (%)</label>
+      <input name="protein" type="number" value="${protein}"><br>
+
+      <label>Energy (kJ per 100g)</label>
+      <input name="energy" type="number" value="${energy}"><br>
+
+      <label>Stock</label>
+      <input name="stock" type="number" value="${stock}"><br>
+
+      <label>Expected shipped</label>
       <input name="expected_shipped" type="date" value="${expected}"><br>
 
-      <label>Reserved for members only?</label><br>
+      <label>Reserved for members only?</label>
       <select name="reserved_members">
         <option value="false" ${reserved === "false" ? "selected" : ""}>No</option>
         <option value="true" ${reserved === "true" ? "selected" : ""}>Yes</option>
@@ -313,14 +352,11 @@ function showEditProductForm(product) {
   document.getElementById("editForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
-    try {
-      await updateProduct(fd);
-      showProducts();
-    } catch (err) {
-      alert("Could not update product: " + err.message);
-    }
+    await updateProduct(fd);
+    showProducts();
   });
 }
+
 
 
 // === API: UPDATE PRODUCT (PUT) ===
@@ -367,31 +403,125 @@ async function deleteProduct(id) {
 // =======================================================
 // ENKLE VISNINGER FOR ORDERS / USERS / COMMENTS
 // =======================================================
-function showOrders() {
+async function showOrders() {
   const content = document.getElementById("content");
-  content.innerHTML = `
-    <h2>Orders</h2>
-    <p>Here we could list orders from the API. Not implemented in this simplified version.</p>
-  `;
+  content.innerHTML = `<h2>Orders</h2><p>Laster ordre...</p>`;
+
+  const token = sessionStorage.getItem("admin_token") || "";
+
+  try {
+    const res = await fetch(
+      `${apiBase}/webshop/orders?key=${groupkey}`,
+      {
+        method: "GET",
+        headers: { authorization: token }
+      }
+    );
+
+    let data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.msg || "Kunne ikke hente ordre");
+    }
+
+    // Noen varianter kan returnere { orders:[...] }, andre bare [...]
+    const orders = Array.isArray(data) ? data : (data.orders || []);
+
+    if (!orders.length) {
+      content.innerHTML = `<h2>Orders</h2><p>Ingen ordre registrert ennå.</p>`;
+      return;
+    }
+
+    let html = `<h2>Orders</h2>`;
+
+    orders.forEach(order => {
+      // Vi er litt defensive her, siden vi ikke vet eksakt struktur på alt:
+      const lines = order.orderlines || order.content || order.lines || [];
+
+      const orderId =
+        order.order_id ??
+        order.id ??
+        "ukjent";
+
+      const customerName =
+        order.customer_name ??
+        order.customer?.customer_name ??
+        "Ukjent";
+
+      const email =
+        order.email ??
+        order.customer?.email ??
+        "–";
+
+      const phone =
+        order.phone ??
+        order.customer?.phone ??
+        "–";
+
+      const street =
+        order.street ??
+        order.customer?.street ??
+        "";
+
+      const zipcode =
+        order.zipcode ??
+        order.customer?.zipcode ??
+        "";
+
+      const city =
+        order.city ??
+        order.customer?.city ??
+        "";
+
+      const country =
+        order.country ??
+        order.customer?.country ??
+        "";
+
+      // Prøv å bruke total fra serveren – hvis ikke, regn selv fra orderlines
+      let total = order.total;
+      if (total == null && Array.isArray(lines) && lines.length) {
+        total = lines.reduce((sum, l) => {
+          const price = Number(l.price) || 0;
+          const qty = Number(l.qty) || 0;
+          return sum + price * qty;
+        }, 0);
+      }
+      const totalText = total != null ? `${total} kr` : "ukjent kr";
+
+      html += `
+        <div class="order-card">
+          <h3>Order #${orderId}</h3>
+
+          <p><strong>Kunde:</strong> ${customerName}</p>
+          <p><strong>E-post:</strong> ${email}</p>
+          <p><strong>Telefon:</strong> ${phone}</p>
+          <p><strong>Adresse:</strong> ${street}, ${zipcode} ${city}, ${country}</p>
+          <p><strong>Total:</strong> ${totalText}</p>
+
+          <details>
+            <summary>Produkter (${lines.length})</summary>
+            <ul>
+              ${Array.isArray(lines) ? lines.map(l => `
+                <li>
+                  ${l.qty ?? "?"} x ${l.product_name ?? "Ukjent produkt"}
+                  (${l.price ?? "?"} kr)
+                </li>
+              `).join("") : ""}
+            </ul>
+          </details>
+        </div>
+      `;
+    });
+
+    content.innerHTML = html;
+
+  } catch (err) {
+    content.innerHTML = `
+      <h2>Orders</h2>
+      <p>Feil ved henting av ordre: ${err.message}</p>
+    `;
+  }
 }
-
-function showUsers() {
-  const content = document.getElementById("content");
-  content.innerHTML = `
-    <h2>Users</h2>
-    <p>Here we could manage users. Not implemented in this simplified version.</p>
-  `;
-}
-
-function showComments() {
-  const content = document.getElementById("content");
-  content.innerHTML = `
-    <h2>Comments</h2>
-    <p>Here we could manage user comments/reviews. Not implemented in this simplified version.</p>
-  `;
-}
-
-
 // =======================================================
 // START APPEN
 // =======================================================
@@ -399,4 +529,46 @@ if (!sessionStorage.getItem("admin_token")) {
   showLogin();
 } else {
   showMenu();
+}
+
+
+// =======================================================
+// USERS - BRUKER usersList DU IMPORTERER
+// =======================================================
+function showUsers() {
+  const content = document.getElementById("content");
+
+  let html = `<h2>Users</h2>`;
+
+  usersList.forEach(user => {
+    html += `
+      <div id="${user.id}">
+        <img src="https://sukkergris.onrender.com/images/${groupkey}/users/${user.thumb}" alt="User image"/><br/>
+        User ID : ${user.id} <br/>
+        Username : ${user.username} <br/>
+        Full Name : ${user.full_name} <br/>
+        Street : ${user.street} <br/>
+        City : ${user.city} <br/>
+        Zip Code : ${user.zipcode} <br/>
+        Country : ${user.country} <br/>
+      </div>
+      <br/>
+      <hr/>
+      <br/>
+    `;
+  });
+
+  content.innerHTML = html;
+}
+
+
+// =======================================================
+// COMMENTS - PLACEHOLDER
+// =======================================================
+function showComments() {
+  const content = document.getElementById("content");
+  content.innerHTML = `
+    <h2>Comments</h2>
+    <p>Here we could manage user comments/reviews. Not implemented in this simplified version.</p>
+  `;
 }
