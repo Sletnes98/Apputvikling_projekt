@@ -95,7 +95,7 @@ function seeCategoryProducts(event) {
         localStorage.setItem("selectedCategoryId", categoryId);
 
         // 👇 VIKTIG: Dette er stien som funker i prosjektet ditt
-        window.location.href = "/Jonathan/Part_2/ProductList.html";
+        window.location.href = "../Jonathan/Part_2/ProductList.html";
     }
 }
 
@@ -118,7 +118,7 @@ function setupHomePageControls() {
 
     // Handlekurv-knapp
     cartButton.addEventListener("click", () => {
-        window.location.href = "/Cart/cart.html"; // endre hvis handlekurv ligger et annet sted
+        window.location.href = "../Sondre_SC/ShoppingCart.html"; // endre hvis handlekurv ligger et annet sted
     });
 }
 
