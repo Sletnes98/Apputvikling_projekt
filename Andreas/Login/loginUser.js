@@ -1,5 +1,3 @@
-// loginUser.js
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
   const msg = document.getElementById("loginMessage");
@@ -40,8 +38,6 @@ export async function loginUser(username, password) {
   const GROUP_KEY = "ABKGYB48";
   const userToken = createBasicAuthString(username, password);
 
-
-
   const response = await fetch(`${BASE_URL}/users/login?key=${GROUP_KEY}`, {
     method: "POST",
     headers: {authorization: userToken}
@@ -59,5 +55,9 @@ export async function loginUser(username, password) {
 function createBasicAuthString(username, password) {
 let combinedStr = username + ":" + password;
 let b64Str = btoa(combinedStr);
+localStorage.setItem("userAuth", b64Str);
 return "basic " + b64Str; //return the basic authentication string
-}
+};
+
+
+
