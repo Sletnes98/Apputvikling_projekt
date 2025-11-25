@@ -20,6 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       msg.textContent = `Welcome!`;
 
+      console.log(user.logindata.token)
+
+      
+
       // Hvis du vil lagre token eller user i localStorage:
       // localStorage.setItem("loggedInUser", JSON.stringify(user));
 
