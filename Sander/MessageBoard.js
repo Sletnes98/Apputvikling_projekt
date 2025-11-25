@@ -5,14 +5,19 @@ const BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
 
 // ------------------------------------------------------------
-// TOKEN
+// HENT TOKEN FRA ANDREAS SIN LOGIN
 // ------------------------------------------------------------
+// Andreas sin login lagrer alt i "userInfo":
+// { msg: "...", token: "Bearer eyJhb..." }
+
 function getToken() {
-    return localStorage.getItem("userAuth");
+    const data = JSON.parse(localStorage.getItem("userInfo"));
+    return data.logindata?.token || null;
 }
 
+
 // ------------------------------------------------------------
-// ERROR / INFO
+// VIS MELDING TIL BRUKER
 // ------------------------------------------------------------
 function showError(msg) {
     document.getElementById("errorMessage").textContent = msg;
@@ -23,10 +28,11 @@ function showInfo(msg) {
 }
 
 // ------------------------------------------------------------
-// HENT MELDINGER
+// HENT ALLE MELDINGER
 // ------------------------------------------------------------
 async function loadMessages() {
     const token = getToken();
+
     if (!token) {
         showError("You must log in to view messages.");
         return;
@@ -48,12 +54,12 @@ async function loadMessages() {
         displayMessages(messages);
 
     } catch (err) {
-        showError("Error loading messages: " + err.message);
+        showError("Network error: " + err.message);
     }
 }
 
 // ------------------------------------------------------------
-// VIS MELDINGER
+// VIS MELDINGER I LISTE
 // ------------------------------------------------------------
 function displayMessages(messages) {
     const container = document.getElementById("messagesContainer");
@@ -70,7 +76,7 @@ function displayMessages(messages) {
 
         box.innerHTML = `
             <strong>${msg.heading}</strong><br>
-            ${msg.message_text}<br><br>
+            ${msg.message_text}<br>
             <small>By user ${msg.user_id} — Thread ${msg.thread}</small>
         `;
 
@@ -79,17 +85,17 @@ function displayMessages(messages) {
 }
 
 // ------------------------------------------------------------
-// POST MELDING
+// POST NY MELDING
 // ------------------------------------------------------------
 async function postMessage(heading, text) {
     const token = getToken();
+
     if (!token) {
         showError("You must log in to post messages.");
         return;
     }
 
     const url = `${BASE_URL}/msgboard/messages?key=${GROUP_KEY}`;
-
     const body = { heading, message_text: text };
 
     try {
@@ -120,19 +126,17 @@ async function postMessage(heading, text) {
 // ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
 
-    // HOME-KNAPP
+    // Gå til hjem
     document.getElementById("homeBtn").addEventListener("click", () => {
-        window.location.href = "./HomePage.html";  
-        // endre hvis din HomePage ligger i annen mappe
+        window.location.href = "../Sander/HomePage.html";
     });
 
-    // LOGIN-KNAPP (DET DU BA OM)
+    // Gå til login-siden til Andreas
     document.getElementById("goToLoginBtn").addEventListener("click", () => {
-        window.location.href = "../Andreas/Login/loginUser.html";  
-        // eller "../Login/loginUser.html" avhengig av hvor den ligger
+        window.location.href = "../Andreas/Login/loginUser.html";
     });
 
-    // POST MELDING
+    // Submit melding
     document.getElementById("postMessageBtn").addEventListener("click", (e) => {
         e.preventDefault();
 
@@ -150,6 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("messageInput").value = "";
     });
 
-    // LAST MELDINGER
+    // Last inn meldinger
     loadMessages();
 });
