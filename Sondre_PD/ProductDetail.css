@@ -16,7 +16,7 @@ body {
 
 header {
   display: flex;
-  justify-content: space-between; /* sender elementer til hver sin side */
+ /* sender elementer til hver sin side */
   align-items: center;
   margin-bottom: 20px;
 }
@@ -94,7 +94,7 @@ header button:hover {
 #productDetail button:last-child {
   background-color: #ffffff;
   border: 1px solid #ccc;
-  margin-left: 10px;
+  margin-left: 300px;
 }
 
 #productDetail button:last-child:hover {

@@ -67,8 +67,18 @@ function showProduct(item) {
         </p>
 
         <button id="buyBtn">Kjøp produkt</button>
-        <button id="backBtn">Tilbake</button>
+        <button class="cartBtn">Handlekurv</button>
+        <button class="backBtn">Tilbake</button>
     `;
+    //----------------------------------------------------------------------------------------
+    // CART-KNAPP
+    //----------------------------------------------------------------------------------------
+    document.querySelectorAll(".cartBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+        window.location.href = "../Sondre_SC/ShoppingCart.html";
+    });
+});
+
 
     //----------------------------------------------------------------------------------------
     // KJØP-KNAPP
@@ -83,9 +93,13 @@ function showProduct(item) {
     //----------------------------------------------------------------------------------------
     // TILBAKE-KNAPP
     //----------------------------------------------------------------------------------------
-    document.getElementById("backBtn").addEventListener("click", () => {
+    document.querySelectorAll(".backBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
         window.location.href = "../Jonathan/Part_2/ProductList.html";
-    });
+     });
+});
+
+
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -94,10 +108,6 @@ function showProduct(item) {
 
 document.getElementById("homepageBtn").addEventListener("click", () => {
     window.location.href = "../Sander/HomePage.html";
-});
-
-document.getElementById("cartBtn").addEventListener("click", () => {
-    window.location.href = "../Sondre_SC/ShoppingCart.html";
 });
 
 //-------------------------------------------------------------------------------------------------------------
