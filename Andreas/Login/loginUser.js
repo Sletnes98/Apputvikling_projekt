@@ -43,13 +43,16 @@ export async function loginUser(username, password) {
     headers: {authorization: userToken}
   });
 
-  console.log(userToken)
+  let logindata = await response.json();
+  localStorage.setItem("userInfo", JSON.stringify(logindata));
+
+  console.log(logindata);
 
   if (!response.ok) {
     throw new Error("Login failed: " + response.status);
   }
 
-  return await response.json();
+  return logindata;
 }
 
 function createBasicAuthString(username, password) {
