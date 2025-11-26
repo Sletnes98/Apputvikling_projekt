@@ -1,44 +1,108 @@
-// Group Key : ABKGYB48
+// ------------------------------------------------------------
+// Produkt-endepunkt
+// ------------------------------------------------------------
 
 let selectedID = localStorage.getItem("selectedProductId");
 let productURL = `https://sukkergris.onrender.com/webshop/products?id=${selectedID}&key=ABKGYB48`;
 
-//-------------------------------------------------------------------------------------------------------------
-// Hent produktdata
-//-------------------------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------------
+// Last produkt + kommentarer
+// ------------------------------------------------------------
+
 async function loadProduct() {
     try {
         const response = await fetch(productURL);
         const data = await response.json();
-        console.log(data);
         showProduct(data[0]);
     } catch (error) {
-        console.log("something went wrong:", error);
+        console.log("Error loading product:", error);
     }
 }
+
 loadProduct();
 
-//-------------------------------------------------------------------------------------------------------------
-// Vis produktinformasjon
-//-------------------------------------------------------------------------------------------------------------
-function showProduct(item) {
+
+// ------------------------------------------------------------
+// LAST API-KOMMENTARER for produktet
+// ------------------------------------------------------------
+
+async function loadComments(productId) {
+    try {
+        const resp = await fetch(
+            `https://sukkergris.onrender.com/webshop/comments?key=ABKGYB48&product_id=${productId}`
+        );
+        const data = await resp.json();
+        return data;
+    } catch (err) {
+        console.log("Error loading comments:", err);
+        return [];
+    }
+}
+
+
+// ------------------------------------------------------------
+// SEND REVIEW TIL API
+// ------------------------------------------------------------
+
+async function sendReviewToAPI(productId, rating, comment) {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (!user || !user.token) {
+        alert("Du må være innlogget for å legge inn en anmeldelse.");
+        return;
+    }
+
+    const body = {
+        comment_text: comment,
+        product_id: productId,
+        rating: rating
+    };
+
+    try {
+        const resp = await fetch(
+            `https://sukkergris.onrender.com/webshop/comments?key=ABKGYB48`,
+            {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": user.token
+                },
+                body: JSON.stringify(body)
+            }
+        );
+
+        const data = await resp.json();
+        console.log("Review posted:", data);
+
+        if (data.error) {
+            alert("Kunne ikke sende anmeldelse: " + data.error);
+            return;
+        }
+
+        alert("Anmeldelse sendt!");
+        loadProduct(); // last siden på nytt
+
+    } catch (err) {
+        console.error("Review error:", err);
+        alert("Kunne ikke sende anmeldelsen.");
+    }
+}
+
+
+// ------------------------------------------------------------
+// VIS PRODUKT
+// ------------------------------------------------------------
+
+async function showProduct(item) {
     const container = document.getElementById("productDetail");
 
-    // Bildelogikk
+    // Riktig bilde-URL
     const imageUrl = item.static
         ? `https://sukkergris.onrender.com/images/GFTPOE21/large/${item.image}`
         : `https://sukkergris.onrender.com/images/ABKGYB48/large/${item.image}`;
 
-    // Datoformat
-    const formattedDate = item.expected_shipped
-        ? new Date(item.expected_shipped).toLocaleDateString("no-NO", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric"
-        })
-        : "";
-
-    // Rating-stjerner
+    // Produkt-rating
     const ratingStars = item.rating ? "⭐".repeat(Math.round(item.rating)) : "";
 
     // HTML
@@ -52,22 +116,15 @@ function showProduct(item) {
         ${item.discount > 0 ? `<p>Rabatt: ${item.discount}%</p>` : ""}
         ${item.rating ? `<p><strong>Vurdering:</strong> ${ratingStars}</p>` : ""}
 
-        <p><strong>Lagerstatus:</strong> 
-            ${item.in_stock 
-                ? `På lager (${item.stock} stk)` 
-                : `Utsolgt – forventet levering: ${formattedDate}`
-            }
-        </p>
-
         <button id="buyBtn">Kjøp produkt</button>
         <button class="cartBtn">Handlekurv</button>
         <button class="backBtn">Tilbake</button>
         <br><br>
     `;
 
-    // ------------------------------------------------------------------------------------
-    // TASK 14 – Review-skjema (kun når innlogget)
-    // ------------------------------------------------------------------------------------
+    // ------------------------------------------------------------
+    // Vis review-skjema hvis innlogget
+    // ------------------------------------------------------------
     if (localStorage.getItem("userInfo")) {
         container.innerHTML += `
             <hr><br>
@@ -86,24 +143,32 @@ function showProduct(item) {
             <textarea id="reviewComment" rows="3" placeholder="Skriv kommentaren din"></textarea>
 
             <button id="sendReviewBtn">Send anmeldelse</button>
-            <br><br>
 
+            <hr>
             <h3>Anmeldelser:</h3>
             <div id="reviewList"></div>
         `;
     }
 
-    // VIS REVIEWS
-    renderReviews(item.id);
+    // ------------------------------------------------------------
+    // LAST REVIEWS FRA API OG VIS DEM
+    // ------------------------------------------------------------
+    const comments = await loadComments(item.id);
+    renderReviews(comments);
 
-    // CART-KNAPP
+
+    // ------------------------------------------------------------
+    // Event listeners
+    // ------------------------------------------------------------
+
+    // Handlekurv
     document.querySelectorAll(".cartBtn").forEach(btn => {
         btn.addEventListener("click", () => {
             window.location.href = "../Sondre_SC/ShoppingCart.html";
         });
     });
 
-    // KJØP-KNAPP
+    // Kjøp
     document.getElementById("buyBtn").addEventListener("click", () => {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         cart.push({ ...item, qty: 1 });
@@ -111,7 +176,7 @@ function showProduct(item) {
         alert("Produkt lagt til i handlekurven!");
     });
 
-    // TILBAKE-KNAPP
+    // Tilbake
     document.querySelectorAll(".backBtn").forEach(btn => {
         btn.addEventListener("click", () => {
             window.location.href = "../Jonathan/Part_2/ProductList.html";
@@ -121,78 +186,55 @@ function showProduct(item) {
     // SEND REVIEW
     if (localStorage.getItem("userInfo")) {
         const sendBtn = document.getElementById("sendReviewBtn");
-
         sendBtn.addEventListener("click", () => {
             const rating = Number(document.getElementById("reviewRating").value);
             const comment = document.getElementById("reviewComment").value.trim();
-            const user = JSON.parse(localStorage.getItem("userInfo"));
 
             if (!comment) {
-                alert("Skriv en kommentar.");
+                alert("Skriv en kommentar først.");
                 return;
             }
 
-            // Hent eksisterende reviews
-            let allReviews = JSON.parse(localStorage.getItem("reviews")) || {};
-
-            if (!allReviews[item.id]) {
-                allReviews[item.id] = [];
-            }
-
-            // Legg til ny review
-            allReviews[item.id].push({
-                username: user.username,
-                rating: rating,
-                comment: comment,
-                date: new Date().toLocaleDateString("no-NO")
-            });
-
-            // Lagre tilbake
-            localStorage.setItem("reviews", JSON.stringify(allReviews));
-
-            // Tøm felt
-            document.getElementById("reviewComment").value = "";
-
-            // Oppdater visning
-            renderReviews(item.id);
+            sendReviewToAPI(item.id, rating, comment);
         });
     }
 }
 
-//-------------------------------------------------------------------------------------------------------------
-// FUNKSJON: Vis anmeldelser
-//-------------------------------------------------------------------------------------------------------------
-function renderReviews(productId) {
+
+// ------------------------------------------------------------
+// VIS KOMMENTARER
+// ------------------------------------------------------------
+
+function renderReviews(comments) {
     const listContainer = document.getElementById("reviewList");
     if (!listContainer) return;
 
-    const allReviews = JSON.parse(localStorage.getItem("reviews")) || {};
-    const reviews = allReviews[productId] || [];
-
-    if (reviews.length === 0) {
+    if (!comments || comments.length === 0) {
         listContainer.innerHTML = "<p>Ingen anmeldelser enda.</p>";
         return;
     }
 
-    listContainer.innerHTML = reviews.map(r => `
-        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:8px;">
-            <p><strong>${r.username}</strong> – ${"⭐".repeat(r.rating)}</p>
-            <p>${r.comment}</p>
-            <p style="font-size:0.8rem; color:#666;">${r.date}</p>
+    listContainer.innerHTML = comments.map(c => `
+        <div style="border:1px solid #ccc; padding:10px; border-radius:8px; margin-bottom:10px;">
+            <p><strong>${c.username}</strong> – ${"⭐".repeat(c.rating)}</p>
+            <p>${c.comment_text}</p>
+            <p style="font-size:0.8rem; color:#666;">${new Date(c.time).toLocaleDateString("no-NO")}</p>
         </div>
     `).join("");
 }
 
-//-------------------------------------------------------------------------------------------------------------
-// HEADER-KNAPP – Hjem
-//-------------------------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------------
+// HEADERKNAPPER
+// ------------------------------------------------------------
 document.getElementById("homepageBtn").addEventListener("click", () => {
     window.location.href = "../Sander/HomePage.html";
 });
 
-//------------------------------------------------------------
-// USER LOGIN STATUS + THUMBNAIL
-//------------------------------------------------------------
+
+// ------------------------------------------------------------
+// USER THUMBNAIL
+// ------------------------------------------------------------
 function setupUserThumbnail() {
     const thumb = document.getElementById("userThumb");
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -202,10 +244,7 @@ function setupUserThumbnail() {
         return;
     }
 
-    const imageURL =
-        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`;
-
-    thumb.src = imageURL;
+    thumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`;
     thumb.style.cursor = "pointer";
 
     thumb.addEventListener("click", () => {
