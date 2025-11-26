@@ -1,5 +1,6 @@
 // Hent cart fra localStorage
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
 // Fraktalternativer (B)
 const shippingMethods = [
@@ -18,7 +19,38 @@ renderStep1();
 // STEG 1 – Kundeinfo
 //---------------------------------------------------------------------
 function renderStep1() {
+  if(localStorage.getItem("userInfo")){
   container.innerHTML = `
+    <h3>1. Kundeinformasjon</h3>
+    
+    <label>Fullt navn</label>
+    <input id="fullname" value=${JSON.stringify(userInfo.full_name)}>
+
+    <label>E-post</label>
+    <input id="email" value=${JSON.stringify(userInfo.username)}>
+
+    <label>Tlf-nummer (valgfritt)</label>
+    <input id="tlf" >
+
+    <label>Gateadresse</label>
+    <input id="street" value=${JSON.stringify(userInfo.street)}>
+
+    <label>Postnummer</label>
+    <input id="zipcode" value=${JSON.stringify(userInfo.zipcode)}>
+
+    <label>By</label>
+    <input id="city" value=${JSON.stringify(userInfo.city)}>
+
+    <label>Land</label>
+    <input id="country" value=${JSON.stringify(userInfo.country)}>
+
+    <div class="actions">
+      <button id="nextBtn">Neste</button>
+    </div>
+  `;
+  } else {
+
+ container.innerHTML = `
     <h3>1. Kundeinformasjon</h3>
     
     <label>Fullt navn</label>
@@ -28,7 +60,7 @@ function renderStep1() {
     <input id="email">
 
     <label>Tlf-nummer</label>
-    <input id="tlf">
+    <input id="tlf" >
 
     <label>Gateadresse</label>
     <input id="street">
@@ -47,6 +79,7 @@ function renderStep1() {
     </div>
   `;
 
+  }
   document.getElementById("nextBtn").addEventListener("click", () => {
     const info = collectCustomerInfo();
 
@@ -60,15 +93,15 @@ function renderStep1() {
 }
 
 function collectCustomerInfo() {
-  const fullname = document.getElementById("fullname").value.trim();
-  const tlfnummer = document.getElementById("tlf").value.trim();
+  const fullname = document.getElementById("fullname").value;
+  const tlfnummer = document.getElementById("tlf").value;
   const email = document.getElementById("email").value.trim();
-  const street = document.getElementById("street").value.trim();
+  const street = document.getElementById("street").value;
   const zipcode = document.getElementById("zipcode").value.trim();
   const city = document.getElementById("city").value.trim();
   const country = document.getElementById("country").value.trim();
 
-  if (!fullname || !tlfnummer || !email  || !street || !zipcode || !city || !country) return null;
+  if (!fullname || !email  || !street || !zipcode || !city || !country) return null;
 
   return { fullname, tlfnummer, email, street, zipcode, city, country };
 }
@@ -225,25 +258,20 @@ document.getElementById("cartBtn").addEventListener("click", () => {
 // ------------------------------------------------------------
 function setupUserThumbnail() {
     const thumb = document.getElementById("userThumb");
-    if (!thumb) return; // hvis siden ikke har thumb
 
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    //  Ikke innlogget → vis login-ikon
-    if (!userInfo || !userInfo.logindata) {
-        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // login ikon
-        thumb.style.cursor = "pointer";
 
-        thumb.addEventListener("click", () => {
-            window.location.href = "../Andreas/Login/loginUser.html";
-        });
-
-        return;
+    if (!localStorage.getItem("userInfo")) {
+        document.getElementById("userThumb").style.display = "none";
+    
     }
 
+
     // ✅ Innlogget → vis profilbilde
+    if(localStorage.getItem("userInfo")){
     const imageURL =
         `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`;
+    
 
     thumb.src = imageURL;
     thumb.style.cursor = "pointer";
@@ -251,6 +279,7 @@ function setupUserThumbnail() {
     thumb.addEventListener("click", () => {
         window.location.href = "../../Jonathan/Task_16/editUserInfo.html";
     });
+    };
 }
 
 // Kjør funksjonen når siden laster  

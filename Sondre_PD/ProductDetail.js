@@ -117,25 +117,18 @@ document.getElementById("homepageBtn").addEventListener("click", () => {
 // ------------------------------------------------------------
 function setupUserThumbnail() {
     const thumb = document.getElementById("userThumb");
-    if (!thumb) return; // hvis siden ikke har thumb
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    //  Ikke innlogget → vis login-ikon
-    if (!userInfo || !userInfo.logindata) {
-        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // login ikon
-        thumb.style.cursor = "pointer";
-
-        thumb.addEventListener("click", () => {
-            window.location.href = "../Andreas/Login/loginUser.html";
-        });
-
-        return;
+    if (!localStorage.getItem("userInfo")) {
+        document.getElementById("userThumb").style.display = "none";
+    
     }
+
 
     // Innlogget → vis profilbilde
     const imageURL =
-        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`;
+        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`;
 
     thumb.src = imageURL;
     thumb.style.cursor = "pointer";
