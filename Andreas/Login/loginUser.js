@@ -20,9 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       msg.textContent = `Welcome!`;
 
-      console.log(user.logindata.token)
-
-      
+      console.log(user.logindata)
 
       // Hvis du vil lagre token eller user i localStorage:
       // localStorage.setItem("loggedInUser", JSON.stringify(user));
@@ -47,16 +45,16 @@ export async function loginUser(username, password) {
     headers: {authorization: userToken}
   });
 
-  let logindata = await response.json();
-  localStorage.setItem("userInfo", JSON.stringify(logindata));
+  let userData = await response.json();
+  localStorage.setItem("userInfo", JSON.stringify(userData.logindata));
 
-  console.log(logindata);
+  console.log(userData);
 
   if (!response.ok) {
     throw new Error("Login failed: " + response.status);
   }
 
-  return logindata;
+  return userData;
 }
 
 function createBasicAuthString(username, password) {
@@ -65,6 +63,3 @@ let b64Str = btoa(combinedStr);
 localStorage.setItem("userAuth", b64Str);
 return "basic " + b64Str; //return the basic authentication string
 };
-
-
-
