@@ -7,6 +7,7 @@ let checkData;
 async function loadData() {
 
     try {
+        
         let response = await fetch(checkURL);
 
         checkData = await response.json();
