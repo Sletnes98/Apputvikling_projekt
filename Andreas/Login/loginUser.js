@@ -22,10 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       msg.textContent = "Welcome!";
 
-      // ✅ Redirect KUN når innloggingen er vellykket
+      // Redirect KUN når innloggingen er vellykket
       setTimeout(() => {
         window.location.href = "../../Sander/HomePage.html";
       }, 300);
+      console.log(user.logindata)
+
+      // localStorage.setItem("loggedInUser", JSON.stringify(user));
 
     } catch (error) {
       console.error(error);
@@ -44,13 +47,20 @@ export async function loginUser(username, password) {
     headers: { authorization: userToken }
   });
 
+HEAD
   const logindata = await response.json();
   console.log("Login response:", logindata);
+  let userData = await response.json();
+  localStorage.setItem("userInfo", JSON.stringify(userData.logindata));
+
+  console.log(userData);
+
 
   if (!response.ok) {
     throw new Error("Login failed: " + response.status);
   }
 
+HEAD
   localStorage.setItem("userInfo", JSON.stringify(logindata));
 
   return logindata;
@@ -62,3 +72,14 @@ function createBasicAuthString(username, password) {
   localStorage.setItem("userAuth", b64Str);
   return "basic " + b64Str; // return the basic authentication string
 }
+
+  return userData;
+
+
+function createBasicAuthString(username, password) {
+let combinedStr = username + ":" + password;
+let b64Str = btoa(combinedStr);
+localStorage.setItem("userAuth", b64Str);
+return "basic " + b64Str; //return the basic authentication string
+};
+
