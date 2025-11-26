@@ -95,6 +95,12 @@ homeButton.addEventListener("click", event => {
 
     userThumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`
 
+    userThumb.addEventListener("click", () => {
+
+        window.location.href = "../../Jonathan/Task_16/editUserInfo.html";
+
+    });
+
 
 
 
