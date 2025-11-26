@@ -18,14 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const user = await loginUser(username, password);
 
-      console.log("User after login:", user);
+      msg.textContent = `Welcome!`;
 
-      msg.textContent = "Welcome!";
+      console.log(user.logindata)
 
-      // ✅ Redirect KUN når innloggingen er vellykket
-      setTimeout(() => {
-        window.location.href = "../../Sander/HomePage.html";
-      }, 300);
+      // Hvis du vil lagre token eller user i localStorage:
+      // localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+      // Hvis du vil redirecte:
+      // window.location.href = "index.html";
 
     } catch (error) {
       console.error(error);
@@ -41,24 +42,24 @@ export async function loginUser(username, password) {
 
   const response = await fetch(`${BASE_URL}/users/login?key=${GROUP_KEY}`, {
     method: "POST",
-    headers: { authorization: userToken }
+    headers: {authorization: userToken}
   });
 
-  const logindata = await response.json();
-  console.log("Login response:", logindata);
+  let userData = await response.json();
+  localStorage.setItem("userInfo", JSON.stringify(userData.logindata));
+
+  console.log(userData);
 
   if (!response.ok) {
     throw new Error("Login failed: " + response.status);
   }
 
-  localStorage.setItem("userInfo", JSON.stringify(logindata));
-
-  return logindata;
+  return userData;
 }
 
 function createBasicAuthString(username, password) {
-  const combinedStr = username + ":" + password;
-  const b64Str = btoa(combinedStr);
-  localStorage.setItem("userAuth", b64Str);
-  return "basic " + b64Str; // return the basic authentication string
-}
+let combinedStr = username + ":" + password;
+let b64Str = btoa(combinedStr);
+localStorage.setItem("userAuth", b64Str);
+return "basic " + b64Str; //return the basic authentication string
+};
