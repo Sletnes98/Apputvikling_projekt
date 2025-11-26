@@ -17,10 +17,11 @@ document.getElementById("submit").addEventListener("click", async event => {
 
       
 
-      /*   if (!response.ok) {
-            alert("Something went wrong");
+       if (response.ok) {
+            window.location.href = "Andreas/Login";
+
         } else {
-            window.location.href = "./listUsers.html";
-        } */
+            alert("Something went wrong");
+        } 
 
 });

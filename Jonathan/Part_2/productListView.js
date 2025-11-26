@@ -91,9 +91,11 @@ homeButton.addEventListener("click", event => {
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     
-    console.log(userInfo.logindata);
+    console.log(userInfo);
 
-    userThumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`
+    if(localStorage.getItem("userInfo")){
+    userThumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`
+    };
 
     userThumb.addEventListener("click", () => {
 
@@ -101,6 +103,10 @@ homeButton.addEventListener("click", event => {
 
     });
 
+if (!localStorage.getItem("userInfo")) {
+    document.getElementById("userThumb").style.display = "none";
+
+};
 
 
 

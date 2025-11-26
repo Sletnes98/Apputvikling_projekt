@@ -50,8 +50,14 @@ body {
     display: block;
   }
   
-  p {
+  h1 {
     
     margin: 20px;
+
+  }
+
+  #deleteUser {
+
+    background-color: rgb(188, 18, 18);
 
   }
