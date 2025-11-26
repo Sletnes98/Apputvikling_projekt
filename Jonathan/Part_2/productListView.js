@@ -1,5 +1,6 @@
 import { loadData } from "./fetchProductData.js";
 
+
 let checkData = await loadData();
 createCatagoryList();
 
@@ -83,6 +84,23 @@ homeButton.addEventListener("click", event => {
     window.location.href = "../../../Sander/HomePage.html";
 
 });
+
+//------------------------------------------------------------------------------------------------------------
+
+    const userThumb = document.getElementById("userThumb");
+
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    
+    console.log(userInfo.logindata);
+
+    userThumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`
+
+    userThumb.addEventListener("click", () => {
+
+        window.location.href = "../../Jonathan/Task_16/editUserInfo.html";
+
+    });
+
 
 
 

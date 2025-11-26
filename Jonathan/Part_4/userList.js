@@ -47,29 +47,3 @@ export async function createUser(username, password, fullname, street, city, zip
 };
 
 //------------------------------------------------------------------------------------------------------------
-
-/* export async function editUser(username, fullname, street, city, zipcode, country, img_file) {
-
-    const data = new FormData();
-
-    data.append("username", username);
-    data.append("fullname", fullname);
-    data.append("street", street);
-    data.append("city", city);
-    data.append("zipcode", zipcode);
-    data.append("country", country);
-    data.append("img_file", img_file);
-
-    data.entries().forEach(element => {
-        console.log(element)
-    });
-
-    const response = await fetch(`https://sukkergris.onrender.com/users?key=${groupKey}`,{
-        method: "PUT",
-        headers: { authorization: authToken },
-        body: data
-    })
-
-    return response;
-
-}; */

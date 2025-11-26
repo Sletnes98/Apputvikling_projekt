@@ -97,7 +97,7 @@ body {
   border-color: #888;
 }
 
-button {
+/* button {
   padding: 10px 16px;
   background-color: #ffffff;
   border: 1px solid #ccc;
@@ -110,7 +110,7 @@ button {
 button:hover {
   background-color: #f0f0f0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
+} */
 
 input {
   padding: 10px 16px;
@@ -144,4 +144,39 @@ input:focus {
 
 #profilePicture {
   max-width: 250px;
+}
+
+#userThumb {
+
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;      /* gjør bildet rundt */
+  object-fit: cover;       /* sørger for at bildet fyller rammen */
+  border: 2px solid #fff;  /* valgfritt: fin hvit kant */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  margin-bottom: 20px;
+  cursor: pointer;
+
+}
+
+#userThumbBig {
+
+
+
+  width: 200px;
+  height: 200px;
+  border-radius: 20%;      /* gjør bildet rundt */
+  object-fit: cover;       /* sørger for at bildet fyller rammen */
+  border: 2px solid #fff;  /* valgfritt: fin hvit kant */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  margin-bottom: 20px;
+  margin: 20px;
+  margin-left: 0;
+
+
 }

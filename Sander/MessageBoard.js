@@ -1,127 +1,159 @@
-// MessageBoard.js
-
+// ------------------------------------------------------------
+// KONFIG
+// ------------------------------------------------------------
 const BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
 
-// ----------------------
+// ------------------------------------------------------------
+// HENT TOKEN FRA ANDREAS SIN LOGIN
+// ------------------------------------------------------------
+// Andreas sin login lagrer alt i "userInfo":
+// { msg: "...", token: "Bearer eyJhb..." }
+
+function getToken() {
+    const data = JSON.parse(localStorage.getItem("userInfo"));
+    return data.logindata?.token || null;
+}
+
+
+// ------------------------------------------------------------
+// VIS MELDING TIL BRUKER
+// ------------------------------------------------------------
+function showError(msg) {
+    document.getElementById("errorMessage").textContent = msg;
+}
+
+function showInfo(msg) {
+    document.getElementById("infoMessage").textContent = msg;
+}
+
+// ------------------------------------------------------------
 // HENT ALLE MELDINGER
-// ----------------------
-async function getMessages() {
-    const url = `${BASE_URL}/msgboard/messages?key=${GROUP_KEY}`;
-    const response = await fetch(url);
+// ------------------------------------------------------------
+async function loadMessages() {
+    const token = getToken();
 
-    if (!response.ok) {
-        throw new Error("Could not load messages, status: " + response.status);
-    }
-
-    return await response.json();
-}
-
-// ----------------------
-// POST NY MELDING
-// ----------------------
-async function postMessage(author, text) {
-    const url = `${BASE_URL}/msgboard/messages?key=${GROUP_KEY}`;
-
-    // API-dokumentasjonen for POST forteller nøyaktig hvilke felt du trenger
-    const body = {
-        author: author || "Anonymous",
-        text: text
-    };
-
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-            // 🔴 IKKE authorization her – alle får skrive
-        },
-        body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-        const errText = await response.text();
-        console.error("Post failed:", errText);
-        throw new Error("Could not post message, status: " + response.status);
-    }
-
-    return await response.json();
-}
-
-// ----------------------
-// RENDER MELDINGER
-// ----------------------
-function renderMessages(messages) {
-    const container = document.getElementById("messagesContainer");
-    container.innerHTML = "";
-
-    if (!Array.isArray(messages) || messages.length === 0) {
-        container.innerHTML = "<p>No messages yet.</p>";
+    if (!token) {
+        showError("You must log in to view messages.");
         return;
     }
 
-    for (const msg of messages) {
-        const div = document.createElement("div");
-        div.className = "message";
-        div.dataset.id = msg.id; // brukes senere til delete
+    const url = `${BASE_URL}/msgboard/messages?key=${GROUP_KEY}&all=true`;
 
-        const header = document.createElement("p");
-        header.innerHTML = `<strong>${msg.author}</strong> wrote:`;
+    try {
+        const response = await fetch(url, {
+            headers: { authorization: token }
+        });
 
-        const text = document.createElement("p");
-        text.textContent = msg.text;
+        if (!response.ok) {
+            showError("Could not load messages.");
+            return;
+        }
 
-        // 🔴 Delete-knapp kan lages, men vi lar den være "passiv" inntil du har login
-        /*
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "Delete";
-        delBtn.className = "delete-btn";
-        */
+        const messages = await response.json();
+        displayMessages(messages);
 
-        div.appendChild(header);
-        div.appendChild(text);
-        // div.appendChild(delBtn);
-
-        container.appendChild(div);
+    } catch (err) {
+        showError("Network error: " + err.message);
     }
 }
 
-// ----------------------
-// INIT
-// ----------------------
-document.addEventListener("DOMContentLoaded", async () => {
-    // last inn eksisterende meldinger
-    try {
-        const messages = await getMessages();
-        renderMessages(messages);
-    } catch (err) {
-        console.error(err);
-        document.getElementById("messagesContainer").textContent =
-            "Could not load messages.";
+// ------------------------------------------------------------
+// VIS MELDINGER I LISTE
+// ------------------------------------------------------------
+function displayMessages(messages) {
+    const container = document.getElementById("messagesContainer");
+    container.innerHTML = "";
+
+    if (!messages || messages.length === 0) {
+        container.textContent = "No messages yet.";
+        return;
     }
 
-    // håndter posting av nye meldinger
-    const form = document.getElementById("messageForm");
-    const authorInput = document.getElementById("author");
-    const textInput = document.getElementById("text");
+    messages.forEach(msg => {
+        const box = document.createElement("div");
+        box.className = "message";
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+        box.innerHTML = `
+            <strong>${msg.heading}</strong><br>
+            ${msg.message_text}<br>
+            <small>By user ${msg.user_id} — Thread ${msg.thread}</small>
+        `;
 
-        const author = authorInput.value.trim();
-        const text = textInput.value.trim();
-
-        if (!text) return;
-
-        try {
-            await postMessage(author, text);
-            textInput.value = "";
-
-            // last inn listen på nytt etter posting
-            const messages = await getMessages();
-            renderMessages(messages);
-        } catch (err) {
-            console.error(err);
-            alert("Could not post message.");
-        }
+        container.appendChild(box);
     });
+}
+
+// ------------------------------------------------------------
+// POST NY MELDING
+// ------------------------------------------------------------
+async function postMessage(heading, text) {
+    const token = getToken();
+
+    if (!token) {
+        showError("You must log in to post messages.");
+        return;
+    }
+
+    const url = `${BASE_URL}/msgboard/messages?key=${GROUP_KEY}`;
+    const body = { heading, message_text: text };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                authorization: token
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            showError("Could not post message.");
+            return;
+        }
+
+        showInfo("Message posted!");
+        loadMessages();
+
+    } catch (err) {
+        showError("Error posting message: " + err.message);
+    }
+}
+
+// ------------------------------------------------------------
+// INIT
+// ------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Gå til hjem
+    document.getElementById("homeBtn").addEventListener("click", () => {
+        window.location.href = "../Sander/HomePage.html";
+    });
+
+    // Gå til login-siden til Andreas
+    document.getElementById("goToLoginBtn").addEventListener("click", () => {
+        window.location.href = "../Andreas/Login/loginUser.html";
+    });
+
+    // Submit melding
+    document.getElementById("postMessageBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const heading = document.getElementById("headingInput").value.trim();
+        const text = document.getElementById("messageInput").value.trim();
+
+        if (!heading || !text) {
+            showError("Please fill in both fields.");
+            return;
+        }
+
+        postMessage(heading, text);
+
+        document.getElementById("headingInput").value = "";
+        document.getElementById("messageInput").value = "";
+    });
+
+    // Last inn meldinger
+    loadMessages();
 });

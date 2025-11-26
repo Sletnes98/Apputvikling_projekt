@@ -1,0 +1,57 @@
+/* Generell styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  /* Form */
+  form {
+    max-width: 400px;
+    margin: 20px;
+    padding: 20px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  form input, form textarea, form select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  
+  /* Buttons */
+  button {
+    background: #4a8ef0;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    margin: 20px;
+
+
+  }
+  
+  button:hover {
+    background: #3a7bd5;
+  }
+  
+  /* Bilder */
+  img {
+    max-width: 100%;
+    border-radius: 8px;
+    display: block;
+  }
+  
+  p {
+    
+    margin: 20px;
+
+  }
