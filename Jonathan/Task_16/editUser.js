@@ -1,32 +1,29 @@
 const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-const userToken = userInfo.logindata.token;
+const userToken = userInfo.token;
 
 
 const form = document.getElementById("userInfoForm");
 
 form.innerHTML = `
-    <input type="text" id="userName" placeholder="${userInfo.logindata.username}"></input>
+    <input type="text" id="userName" placeholder="${userInfo.username}"></input>
 
-    <input type="text" id="fullName" placeholder="${userInfo.logindata.full_name}"></input>
+    <input type="text" id="fullName" placeholder="${userInfo.full_name}"></input>
 
-    <input type="text" id="street" placeholder="${userInfo.logindata.street}"></input>
+    <input type="text" id="street" placeholder="${userInfo.street}"></input>
 
-    <input type="text" id="city" placeholder="${userInfo.logindata.city}"></input>
+    <input type="text" id="city" placeholder="${userInfo.city}"></input>
 
-    <input type="text" id="zipCode" placeholder="${userInfo.logindata.zipcode}"></input>
+    <input type="text" id="zipCode" placeholder="${userInfo.zipcode}"></input>
 
-    <input type="text" id="country" placeholder="${userInfo.logindata.country}"></input>
+    <input type="text" id="country" placeholder="${userInfo.country}"></input>
 
-    <img id="userThumbBig" src="https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}"/>
+    <img id="userThumbBig" src="https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}"/>
 
     <input type="file" id="profilePicture" accept="image/*"></input>
 `;
 
 //------------------------------------------------------------------------------------------------------------
-
-    
-console.log(userInfo.logindata);
 
     async function deleteActiveUser(userId) {
 
@@ -45,11 +42,31 @@ console.log(userInfo.logindata);
 const deleteUser = document.getElementById("deleteUser");
 deleteUser.addEventListener("click", () => {
 
-    console.log("User deleted!");
+    if (confirm("Er du sikker på at du vil slette brukeren din?")) {
+
+        deleteActiveUser(userInfo.id);
+
+        setTimeout(() => {
+            window.location.href = "../../Sander/HomePage.html";
+        }, 2000);
+    }
 
 });
 
 //------------------------------------------------------------------------------------------------------------
+
+const back = document.getElementById("back");
+back.addEventListener("click", () => {
+
+    window.history.back();
+
+});
+
+//------------------------------------------------------------------------------------------------------------
+
+let userInfoText = document.getElementById("userInfoText");
+
+
 
 export async function editUser(username, fullname, street, city, zipcode, country, img_file) {
 
@@ -73,6 +90,22 @@ export async function editUser(username, fullname, street, city, zipcode, countr
         body: data
     })
 
+    console.log("Dataen fra PUT i editUser() ");
+    const updateData = await response.json();
+
+    const token = userToken;
+
+    console.log(updateData.record);
+
+    updateData.record.token = token;
+
+    localStorage.setItem("userInfo", JSON.stringify(updateData.record));
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000); 
+
+
     return response;
 
 };
@@ -89,7 +122,7 @@ document.getElementById("submit").addEventListener("click", async event => {
 
   
         const response = await editUser(username, fullName, street, city, zipCode, country, profilePicture.files[0]);
-        console.log(response);
+        //console.log(response);
 
         // Her blir jo ikke localstorage oppdatert
         // Skal vi bare slette storage og be dem logge inn på nytt eller skal vi hente ut den nye dataen med engang?

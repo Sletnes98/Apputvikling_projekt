@@ -3,18 +3,16 @@
 // ------------------------------------------------------------
 const BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
+const data = JSON.parse(localStorage.getItem("userInfo"));
+console.log(data.logindata);
 
 // ------------------------------------------------------------
-// HENT TOKEN FRA ANDREAS SIN LOGIN
+// HENT TOKEN FRA LOGIN
 // ------------------------------------------------------------
-// Andreas sin login lagrer alt i "userInfo":
-// { msg: "...", token: "Bearer eyJhb..." }
-
 function getToken() {
     const data = JSON.parse(localStorage.getItem("userInfo"));
-    return data.logindata?.token || null;
+    return data?.logindata?.token || null;
 }
-
 
 // ------------------------------------------------------------
 // VIS MELDING TIL BRUKER
@@ -59,8 +57,9 @@ async function loadMessages() {
 }
 
 // ------------------------------------------------------------
-// VIS MELDINGER I LISTE
+// VIS MELDINGER I LISTE + RATING
 // ------------------------------------------------------------
+
 function displayMessages(messages) {
     const container = document.getElementById("messagesContainer");
     container.innerHTML = "";
@@ -73,16 +72,87 @@ function displayMessages(messages) {
     messages.forEach(msg => {
         const box = document.createElement("div");
         box.className = "message";
+        console.log(msg);
 
         box.innerHTML = `
             <strong>${msg.heading}</strong><br>
-            ${msg.message_text}<br>
-            <small>By user ${msg.user_id} — Thread ${msg.thread}</small>
+            ${msg.message}<br>
+            <small>By user ${msg.username} — Thread ${msg.thread}</small>
+            <div class="rating">
+                Rate user:
+                <button data-user="${msg.user_id}" data-rating="1">⭐</button>
+                <button data-user="${msg.user_id}" data-rating="2">⭐⭐</button>
+                <button data-user="${msg.user_id}" data-rating="3">⭐⭐⭐</button>
+                <button data-user="${msg.user_id}" data-rating="4">⭐⭐⭐⭐</button>
+                <button data-user="${msg.user_id}" data-rating="5">⭐⭐⭐⭐⭐</button>
+            </div>
         `;
 
         container.appendChild(box);
     });
+
+    // Legg til event listeners for rating-knappene
+    document.querySelectorAll(".rating button").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const userId = btn.dataset.user;
+            const rating = btn.dataset.rating;
+            rateUser(userId, rating);
+        });
+    });
 }
+
+// ------------------------------------------------------------
+// RATE EN BRUKER (MeowMeowBeenz)
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// RATE EN BRUKER (MeowMeowBeenz)
+// ------------------------------------------------------------
+async function rateUser(userId, rating) {
+    const token = getToken();
+    if (!token) {
+        showError("You must log in to rate users.");
+        return;
+    }
+
+    const url = `${BASE_URL}/users/beenz?key=${GROUP_KEY}`;
+    const body = {
+        userid: parseInt(userId, 10),
+        beenz: parseInt(rating, 10)
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "content-type": "application/json",
+                authorization: token
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            // Les feilmelding fra serveren for debugging
+            let msg = "Could not rate user.";
+            try {
+                const errorData = await response.json();
+                if (errorData && errorData.msg) {
+                    msg += " " + errorData.msg;
+                }
+            } catch (_) {
+                // ignorer JSON-feil
+            }
+
+            showError(msg);
+            return;
+        }
+
+        showInfo(`You rated user ${userId} with ${rating} stars!`);
+
+    } catch (err) {
+        showError("Error rating user: " + err.message);
+    }
+}
+
 
 // ------------------------------------------------------------
 // POST NY MELDING
@@ -131,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "../Sander/HomePage.html";
     });
 
-    // Gå til login-siden til Andreas
+    // Gå til login-siden
     document.getElementById("goToLoginBtn").addEventListener("click", () => {
         window.location.href = "../Andreas/Login/loginUser.html";
     });
