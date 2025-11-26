@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       msg.textContent = "Welcome!";
 
-      // ✅ Redirect KUN når innloggingen er vellykket
       setTimeout(() => {
         window.location.href = "../../Sander/HomePage.html";
       }, 300);
@@ -45,11 +44,8 @@ export async function loginUser(username, password) {
   });
 
   const logindata = await response.json();
-  console.log("Login response:", logindata);
 
-  if (!response.ok) {
-    throw new Error("Login failed: " + response.status);
-  }
+  console.log("Login response:", logindata);
 
   localStorage.setItem("userInfo", JSON.stringify(logindata.logindata));
 
@@ -61,4 +57,4 @@ function createBasicAuthString(username, password) {
   const b64Str = btoa(combinedStr);
   localStorage.setItem("userAuth", b64Str);
   return "basic " + b64Str; // return the basic authentication string
-}
+};
