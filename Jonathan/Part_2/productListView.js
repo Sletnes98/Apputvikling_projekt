@@ -8,7 +8,7 @@ export async function createCatagoryList() {
 
     await checkData.forEach(product => {
 
-        const container = document.getElementById("productContainer")
+        const container = document.getElementById("productContainer");
         let thumbSrc = product.static
             ? `https://sukkergris.onrender.com/images/GFTPOE21/small/${product.thumb}`
             : `https://sukkergris.onrender.com/images/ABKGYB48/small/${product.thumb}`;
@@ -91,7 +91,7 @@ homeButton.addEventListener("click", event => {
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     
-    console.log(userInfo.logindata);
+    //console.log(userInfo);
 
     if(localStorage.getItem("userInfo")){
     userThumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`
@@ -103,10 +103,11 @@ homeButton.addEventListener("click", event => {
 
     });
 
-if (!localStorage.getItem("userInfo")) {
+if (localStorage.getItem("userInfo") === null) {
     document.getElementById("userThumb").style.display = "none";
 
-};
+}
+
 
 
 

@@ -56,11 +56,35 @@ deleteUser.addEventListener("click", () => {
 //------------------------------------------------------------------------------------------------------------
 
 const back = document.getElementById("back");
+
 back.addEventListener("click", () => {
 
     window.history.back();
 
 });
+
+//------------------------------------------------------------------------------------------------------------
+
+const logout = document.getElementById("logout");
+
+logout.addEventListener("click", () => {
+    
+    if (confirm("Er du sikker på at du vil logge ut?")) {
+
+    localStorage.removeItem("userInfo");
+
+    setTimeout(() => {
+
+        window.location.href = "../../Sander/HomePage.html";
+
+    }, 1000);
+
+    };
+
+   
+
+});
+
 
 //------------------------------------------------------------------------------------------------------------
 
