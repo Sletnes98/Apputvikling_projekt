@@ -130,3 +130,43 @@ function saveCart() {
 document.getElementById("homepageBtn").addEventListener("click", () => {
     window.location.href = "../Sander/HomePage.html";
 });
+
+// ------------------------------------------------------------
+// USER LOGIN STATUS + THUMBNAIL
+// ------------------------------------------------------------
+
+// ------------------------------------------------------------
+// USER LOGIN STATUS + THUMBNAIL
+// ------------------------------------------------------------
+function setupUserThumbnail() {
+    const thumb = document.getElementById("userThumb");
+    if (!thumb) return; // hvis siden ikke har thumb
+
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+    //  Ikke innlogget → vis login-ikon
+    if (!userInfo || !userInfo.logindata) {
+        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // login ikon
+        thumb.style.cursor = "pointer";
+
+        thumb.addEventListener("click", () => {
+            window.location.href = "../Andreas/Login/loginUser.html";
+        });
+
+        return;
+    }
+
+    // ✅ Innlogget → vis profilbilde
+    const imageURL =
+        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`;
+
+    thumb.src = imageURL;
+    thumb.style.cursor = "pointer";
+
+    thumb.addEventListener("click", () => {
+        window.location.href = "../../Jonathan/Task_16/editUserInfo.html";
+    });
+}
+
+// Kjør funksjonen når siden laster  
+document.addEventListener("DOMContentLoaded", setupUserThumbnail);
