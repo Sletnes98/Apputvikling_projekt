@@ -51,7 +51,7 @@ export async function loginUser(username, password) {
     throw new Error("Login failed: " + response.status);
   }
 
-  localStorage.setItem("userInfo", JSON.stringify(logindata));
+  localStorage.setItem("userInfo", JSON.stringify(logindata.logindata));
 
   return logindata;
 }
