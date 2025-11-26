@@ -100,6 +100,9 @@ function displayMessages(messages) {
 // ------------------------------------------------------------
 // RATE EN BRUKER (MeowMeowBeenz)
 // ------------------------------------------------------------
+// ------------------------------------------------------------
+// RATE EN BRUKER (MeowMeowBeenz)
+// ------------------------------------------------------------
 async function rateUser(userId, rating) {
     const token = getToken();
     if (!token) {
@@ -107,12 +110,15 @@ async function rateUser(userId, rating) {
         return;
     }
 
-    const url = `${BASE_URL}/msgboard/meowmeowbeenz?key=${GROUP_KEY}`;
-    const body = { userid: userId, rating: parseInt(rating) };
+    const url = `${BASE_URL}/users/beenz?key=${GROUP_KEY}`;
+    const body = {
+        userid: parseInt(userId, 10),
+        beenz: parseInt(rating, 10)
+    };
 
     try {
         const response = await fetch(url, {
-            method: "POST",
+            method: "PUT",
             headers: {
                 "content-type": "application/json",
                 authorization: token
@@ -121,17 +127,28 @@ async function rateUser(userId, rating) {
         });
 
         if (!response.ok) {
-            showError("Could not rate user.");
+            // Les feilmelding fra serveren for debugging
+            let msg = "Could not rate user.";
+            try {
+                const errorData = await response.json();
+                if (errorData && errorData.msg) {
+                    msg += " " + errorData.msg;
+                }
+            } catch (_) {
+                // ignorer JSON-feil
+            }
+
+            showError(msg);
             return;
         }
 
         showInfo(`You rated user ${userId} with ${rating} stars!`);
-        loadMessages(); // oppdater visningen
 
     } catch (err) {
         showError("Error rating user: " + err.message);
     }
 }
+
 
 // ------------------------------------------------------------
 // POST NY MELDING
