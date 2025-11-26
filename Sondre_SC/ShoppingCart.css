@@ -75,3 +75,31 @@ td input {
 
 
 }
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+}
+
+/* Samme stil som .actions button */
+header button {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.2s ease;
+}
+
+header button:hover {
+    background: #f0f0f0;
+}
+
+/* Flytt knapper litt bort fra bruker-ikonet */
+header #homepageBtn,
+header #backBtn {
+    z-index: 999; /* slik at de alltid ligger foran */
+}

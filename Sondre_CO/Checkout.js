@@ -243,7 +243,7 @@ function setupUserThumbnail() {
 
     // ✅ Innlogget → vis profilbilde
     const imageURL =
-        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`;
+        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`;
 
     thumb.src = imageURL;
     thumb.style.cursor = "pointer";
