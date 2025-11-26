@@ -50,12 +50,14 @@ input {
 }
 
 button {
-  padding: 10px 16px;
+  padding: 8px 14px;
   border-radius: 10px;
   background: #fff;
   border: 1px solid #ccc;
   cursor: pointer;
   transition: 0.15s ease;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 button:hover {
