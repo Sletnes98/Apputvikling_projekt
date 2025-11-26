@@ -3,6 +3,8 @@
 // ------------------------------------------------------------
 const BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
+const data = JSON.parse(localStorage.getItem("userInfo"));
+console.log(data.logindata);
 
 // ------------------------------------------------------------
 // HENT TOKEN FRA LOGIN
@@ -57,6 +59,7 @@ async function loadMessages() {
 // ------------------------------------------------------------
 // VIS MELDINGER I LISTE + RATING
 // ------------------------------------------------------------
+
 function displayMessages(messages) {
     const container = document.getElementById("messagesContainer");
     container.innerHTML = "";
@@ -69,11 +72,12 @@ function displayMessages(messages) {
     messages.forEach(msg => {
         const box = document.createElement("div");
         box.className = "message";
+        console.log(msg);
 
         box.innerHTML = `
             <strong>${msg.heading}</strong><br>
             ${msg.message}<br>
-            <small>By user ${msg.user_id} — Thread ${msg.thread}</small>
+            <small>By user ${msg.username} — Thread ${msg.thread}</small>
             <div class="rating">
                 Rate user:
                 <button data-user="${msg.user_id}" data-rating="1">⭐</button>

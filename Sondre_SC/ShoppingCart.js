@@ -15,7 +15,6 @@ function renderCart() {
         container.innerHTML = `
             <p>Handlekurven er tom.</p>
             <div class="actions">
-                <button id="backBtn">Tilbake</button>
             </div>
         `;
 
@@ -57,7 +56,6 @@ function renderCart() {
 
         <div class="actions">
             <button id="emptyBtn">Tøm handlekurv</button>
-            <button id="backBtn">Tilbake</button>
             <button id="checkoutBtn">Gå til checkout</button>
         </div>
     `;
