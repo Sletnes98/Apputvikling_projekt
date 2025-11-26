@@ -427,6 +427,7 @@ async function showOrders() {
 
     // Noen varianter kan returnere { orders:[...] }, andre bare [...]
     const orders = Array.isArray(data) ? data : (data.orders || []);
+    console.log(orders);
 
     if (!orders.length) {
       content.innerHTML = `<h2>Orders</h2><p>Ingen ordre registrert ennå.</p>`;
