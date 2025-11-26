@@ -91,7 +91,7 @@ homeButton.addEventListener("click", event => {
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     
-    console.log(userInfo);
+    console.log(userInfo.logindata);
 
     if(localStorage.getItem("userInfo")){
     userThumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`

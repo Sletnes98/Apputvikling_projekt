@@ -21,11 +21,15 @@ document.getElementById("submit").addEventListener("click", async event => {
             }, 300);
        */
 
-       if (response.ok) {
-            window.location.href = "Andreas/Login";
+     /*   if (response.ok) {
+
+            setTimeout(() => {
+                window.location.href = "../../../Andreas/Login/loginUser.html";
+
+              }, 1000)
 
         } else {
             alert("Something went wrong");
-        } 
+        }  */
 
 });

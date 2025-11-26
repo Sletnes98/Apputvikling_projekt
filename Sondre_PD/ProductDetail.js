@@ -6,7 +6,6 @@ let productURL = `https://sukkergris.onrender.com/webshop/products?id=${selected
 //-------------------------------------------------------------------------------------------------------------
 // Hent produktdata
 //-------------------------------------------------------------------------------------------------------------
-
 async function loadProduct() {
     try {
         const response = await fetch(productURL);
@@ -17,15 +16,12 @@ async function loadProduct() {
         console.log("something went wrong:", error);
     }
 }
-
 loadProduct();
 
 //-------------------------------------------------------------------------------------------------------------
-// Vis produktinformasjon (template style)
+// Vis produktinformasjon
 //-------------------------------------------------------------------------------------------------------------
-
 function showProduct(item) {
-
     const container = document.getElementById("productDetail");
 
     // Bildelogikk
@@ -45,18 +41,15 @@ function showProduct(item) {
     // Rating-stjerner
     const ratingStars = item.rating ? "⭐".repeat(Math.round(item.rating)) : "";
 
-    // HTML som kompisen din ville skrevet – rent og enkelt
+    // HTML
     container.innerHTML = `
         <h2>${item.name}</h2>
-
         <img src="${imageUrl}" alt="${item.name}">
-
         <p><strong>Kategori:</strong> ${item.category_name}</p>
         <p><strong>Pris:</strong> ${item.price} kr</p>
         <p><strong>Beskrivelse:</strong> ${item.description}</p>
 
         ${item.discount > 0 ? `<p>Rabatt: ${item.discount}%</p>` : ""}
-
         ${item.rating ? `<p><strong>Vurdering:</strong> ${ratingStars}</p>` : ""}
 
         <p><strong>Lagerstatus:</strong> 
@@ -69,20 +62,48 @@ function showProduct(item) {
         <button id="buyBtn">Kjøp produkt</button>
         <button class="cartBtn">Handlekurv</button>
         <button class="backBtn">Tilbake</button>
+        <br><br>
     `;
-    //----------------------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------------------
+    // TASK 14 – Review-skjema (kun når innlogget)
+    // ------------------------------------------------------------------------------------
+    if (localStorage.getItem("userInfo")) {
+        container.innerHTML += `
+            <hr><br>
+            <h3>Legg igjen en anmeldelse</h3>
+
+            <label>Rating:</label>
+            <select id="reviewRating">
+                <option value="5">5 ⭐⭐⭐⭐⭐</option>
+                <option value="4">4 ⭐⭐⭐⭐</option>
+                <option value="3">3 ⭐⭐⭐</option>
+                <option value="2">2 ⭐⭐</option>
+                <option value="1">1 ⭐</option>
+            </select>
+
+            <label>Kommentar:</label>
+            <textarea id="reviewComment" rows="3" placeholder="Skriv kommentaren din"></textarea>
+
+            <button id="sendReviewBtn">Send anmeldelse</button>
+            <br><br>
+
+            <h3>Anmeldelser:</h3>
+            <div id="reviewList"></div>
+        `;
+    }
+
+    // VIS REVIEWS
+    renderReviews(item.id);
+
     // CART-KNAPP
-    //----------------------------------------------------------------------------------------
     document.querySelectorAll(".cartBtn").forEach(btn => {
         btn.addEventListener("click", () => {
-        window.location.href = "../Sondre_SC/ShoppingCart.html";
+            window.location.href = "../Sondre_SC/ShoppingCart.html";
+        });
     });
-});
 
-
-    //----------------------------------------------------------------------------------------
     // KJØP-KNAPP
-    //----------------------------------------------------------------------------------------
     document.getElementById("buyBtn").addEventListener("click", () => {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         cart.push({ ...item, qty: 1 });
@@ -90,52 +111,99 @@ function showProduct(item) {
         alert("Produkt lagt til i handlekurven!");
     });
 
-    //----------------------------------------------------------------------------------------
     // TILBAKE-KNAPP
-    //----------------------------------------------------------------------------------------
     document.querySelectorAll(".backBtn").forEach(btn => {
         btn.addEventListener("click", () => {
-        window.location.href = "../Jonathan/Part_2/ProductList.html";
-     });
-});
+            window.location.href = "../Jonathan/Part_2/ProductList.html";
+        });
+    });
 
+    // SEND REVIEW
+    if (localStorage.getItem("userInfo")) {
+        const sendBtn = document.getElementById("sendReviewBtn");
 
+        sendBtn.addEventListener("click", () => {
+            const rating = Number(document.getElementById("reviewRating").value);
+            const comment = document.getElementById("reviewComment").value.trim();
+            const user = JSON.parse(localStorage.getItem("userInfo"));
+
+            if (!comment) {
+                alert("Skriv en kommentar.");
+                return;
+            }
+
+            // Hent eksisterende reviews
+            let allReviews = JSON.parse(localStorage.getItem("reviews")) || {};
+
+            if (!allReviews[item.id]) {
+                allReviews[item.id] = [];
+            }
+
+            // Legg til ny review
+            allReviews[item.id].push({
+                username: user.username,
+                rating: rating,
+                comment: comment,
+                date: new Date().toLocaleDateString("no-NO")
+            });
+
+            // Lagre tilbake
+            localStorage.setItem("reviews", JSON.stringify(allReviews));
+
+            // Tøm felt
+            document.getElementById("reviewComment").value = "";
+
+            // Oppdater visning
+            renderReviews(item.id);
+        });
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------
-// HEADER-KNAPPER
+// FUNKSJON: Vis anmeldelser
 //-------------------------------------------------------------------------------------------------------------
+function renderReviews(productId) {
+    const listContainer = document.getElementById("reviewList");
+    if (!listContainer) return;
 
+    const allReviews = JSON.parse(localStorage.getItem("reviews")) || {};
+    const reviews = allReviews[productId] || [];
+
+    if (reviews.length === 0) {
+        listContainer.innerHTML = "<p>Ingen anmeldelser enda.</p>";
+        return;
+    }
+
+    listContainer.innerHTML = reviews.map(r => `
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:8px;">
+            <p><strong>${r.username}</strong> – ${"⭐".repeat(r.rating)}</p>
+            <p>${r.comment}</p>
+            <p style="font-size:0.8rem; color:#666;">${r.date}</p>
+        </div>
+    `).join("");
+}
+
+//-------------------------------------------------------------------------------------------------------------
+// HEADER-KNAPP – Hjem
+//-------------------------------------------------------------------------------------------------------------
 document.getElementById("homepageBtn").addEventListener("click", () => {
     window.location.href = "../Sander/HomePage.html";
 });
 
-//-------------------------------------------------------------------------------------------------------------
-
-// ------------------------------------------------------------
+//------------------------------------------------------------
 // USER LOGIN STATUS + THUMBNAIL
-// ------------------------------------------------------------
+//------------------------------------------------------------
 function setupUserThumbnail() {
     const thumb = document.getElementById("userThumb");
-    if (!thumb) return; // hvis siden ikke har thumb
-
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    //  Ikke innlogget → vis login-ikon
-    if (!userInfo || !userInfo.logindata) {
-        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // login ikon
-        thumb.style.cursor = "pointer";
-
-        thumb.addEventListener("click", () => {
-            window.location.href = "../Andreas/Login/loginUser.html";
-        });
-
+    if (!userInfo) {
+        thumb.style.display = "none";
         return;
     }
 
-    // Innlogget → vis profilbilde
     const imageURL =
-        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`;
+        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`;
 
     thumb.src = imageURL;
     thumb.style.cursor = "pointer";
@@ -145,5 +213,4 @@ function setupUserThumbnail() {
     });
 }
 
-// Kjør funksjonen når siden laster  
 document.addEventListener("DOMContentLoaded", setupUserThumbnail);

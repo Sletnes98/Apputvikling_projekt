@@ -457,6 +457,7 @@ async function showOrders() {
     const data = await getOrders();
 
     const orders = Array.isArray(data) ? data : (data.orders || []);
+    console.log(orders);
 
     if (!orders.length) {
       content.innerHTML = "<h2>Orders</h2><p>Ingen ordre funnet.</p>";
