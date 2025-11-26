@@ -100,11 +100,16 @@ function renderStep2(customer) {
 
 // ------------------------------------------------------------
 function renderStep3(customer, shipping) {
-  const itemsHtml = cart
-    .map(item => `<li>${item.name} – ${item.qty} stk – ${item.price * item.qty} kr</li>`)
-    .join("");
 
-  const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const itemsHtml = cart.map(item => `
+      <li>${item.name} – ${item.qty} stk – ${getFinalPrice(item) * item.qty} kr</li>
+  `).join("");
+
+  const cartTotal = cart.reduce(
+    (sum, i) => sum + getFinalPrice(i) * i.qty,
+    0
+  );
+
   const total = cartTotal + shipping.price;
 
   container.innerHTML = `
@@ -114,11 +119,10 @@ function renderStep3(customer, shipping) {
     <p><strong>Tlf:</strong> ${customer.tlfnummer || "Ikke oppgitt"}</p>
     <p><strong>E-post:</strong> ${customer.email}</p>
     <p><strong>Adresse:</strong> ${customer.street}, ${customer.zipcode} ${customer.city}, ${customer.country}</p>
-    
+
     <h4>Varer:</h4>
-    <br>
     <ul>${itemsHtml}</ul>
-    <br>
+
     <p><strong>Frakt:</strong> ${shipping.name} (${shipping.price} kr)</p>
     <p><strong>Total:</strong> ${total} kr</p>
 
@@ -163,7 +167,11 @@ async function placeOrder(customer, shipping) {
 
     const apiData = await resp.json();
 
-    const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    const cartTotal = cart.reduce(
+      (sum, i) => sum + getFinalPrice(i) * i.qty,
+      0
+    );
+
     const total = cartTotal + shipping.price;
 
     const orderToStore = { ...apiData, cart, total };
@@ -206,3 +214,9 @@ function setupUserThumbnail() {
 }
 
 document.addEventListener("DOMContentLoaded", setupUserThumbnail);
+
+// ------------------------------------------------------------
+function getFinalPrice(item) {
+    if (!item.discount || item.discount <= 0) return item.price;
+    return item.price - (item.price * item.discount / 100);
+}

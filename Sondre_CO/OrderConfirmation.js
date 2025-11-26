@@ -3,7 +3,6 @@ const dataString = localStorage.getItem("lastOrder");
 const infoContainer = document.getElementById("orderInfo");
 const productContainer = document.getElementById("orderProducts");
 
-// ------------------------------------------------------------
 if (!dataString) {
     infoContainer.innerHTML = "<p>Fant ingen ordre.</p>";
 } else {
@@ -12,16 +11,20 @@ if (!dataString) {
     const cart = data.cart || [];
 
     const shippingMethods = [
-        { id: 1, name: "Hent i butikk", price: 0 },
+        { id: 1, name: "Hent i butikk",   price: 0 },
         { id: 2, name: "Standard frakt", price: 49 },
-        { id: 3, name: "Ekspressfrakt", price: 99 }
+        { id: 3, name: "Ekspressfrakt",  price: 99 }
     ];
 
-    const shipping =
-        shippingMethods.find(s => s.id === data.record.shipping_id) ||
-        { name: "Ukjent", price: 0 };
+    const shipping = shippingMethods.find(s => s.id === data.record.shipping_id) || {
+        name: "Ukjent", price: 0
+    };
 
-    const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const cartTotal = cart.reduce(
+        (sum, item) => sum + getFinalPrice(item) * item.qty,
+        0
+    );
+
     const total = data.total ?? (cartTotal + shipping.price);
 
     infoContainer.innerHTML = `
@@ -34,8 +37,7 @@ if (!dataString) {
         <p><strong>Telefon:</strong> ${data.record.phone ?? "Ikke oppgitt"}</p>
         <p><strong>E-post:</strong> ${data.record.email}</p>
         <p><strong>Adresse:</strong> 
-            ${data.record.street}, ${data.record.zipcode} 
-            ${data.record.city}, ${data.record.country}
+           ${data.record.street}, ${data.record.zipcode} ${data.record.city}, ${data.record.country}
         </p>
 
         <br><hr><br>
@@ -57,9 +59,10 @@ if (!dataString) {
                 <li>
                     <strong>Navn:</strong> ${item.name}<br>
                     <strong>Antall:</strong> ${item.qty}<br>
-                    <strong>Pris per:</strong> ${item.price} kr<br>
-                    <strong>Delsum:</strong> ${(item.price * item.qty).toFixed(2)} kr
-                </li><br>
+                    <strong>Pris per:</strong> ${getFinalPrice(item)} kr<br>
+                    <strong>Delsum:</strong> ${(getFinalPrice(item) * item.qty).toFixed(2)} kr
+                </li>
+                <br>
             `).join("")}
         </ul>
 
@@ -72,7 +75,6 @@ document.getElementById("homepageBtn").addEventListener("click", () => {
     window.location.href = "../Sander/HomePage.html";
 });
 
-// ------------------------------------------------------------
 document.getElementById("backToCheckoutBtn").addEventListener("click", () => {
     window.location.href = "../Sondre_CO/CheckOut.html";
 });
@@ -96,3 +98,9 @@ function setupUserThumbnail() {
 }
 
 document.addEventListener("DOMContentLoaded", setupUserThumbnail);
+
+// ------------------------------------------------------------
+function getFinalPrice(item) {
+    if (!item.discount || item.discount <= 0) return item.price;
+    return item.price - (item.price * item.discount / 100);
+}

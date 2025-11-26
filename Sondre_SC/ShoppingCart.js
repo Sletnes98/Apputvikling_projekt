@@ -18,7 +18,7 @@ function renderCart() {
     const rowsHTML = cart.map((item, index) => `
         <tr>
             <td>${item.name}</td>
-            <td>${item.price} kr</td>
+            <td>${getFinalPrice(item)} kr</td>
             <td>
                 <input 
                     type="number" 
@@ -26,7 +26,7 @@ function renderCart() {
                     value="${item.qty || 1}" 
                     data-index="${index}">
             </td>
-            <td>${(item.price * (item.qty || 1)).toFixed(2)} kr</td>
+            <td>${(getFinalPrice(item) * (item.qty || 1)).toFixed(2)} kr</td>
             <td><button class="deleteBtn" data-index="${index}">Slett</button></td>
         </tr>
     `).join("");
@@ -68,7 +68,10 @@ function renderCart() {
 
 // ------------------------------------------------------------
 function calculateTotal() {
-    return cart.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
+    return cart.reduce(
+        (sum, item) => sum + getFinalPrice(item) * (item.qty || 1),
+        0
+    );
 }
 
 function updateQuantity(event) {
@@ -83,6 +86,11 @@ function deleteItem(event) {
     cart.splice(index, 1);
     saveCart();
     renderCart();
+}
+
+function getFinalPrice(item) {
+    if (!item.discount || item.discount <= 0) return item.price;
+    return item.price - (item.price * item.discount / 100);
 }
 
 function emptyCart() {
