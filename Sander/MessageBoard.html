@@ -2,22 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Message board</title>
-</head>
-<body>
-    <h1>Message board</h1>
+    <title>Message Board</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <script type="module" src="./MessageBoard.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        #wrapper {
+            max-width: 520px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.10);
+        }
+
+        button {
+            padding: 10px;
+            width: 100%;
+            margin-top: 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: black;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        .message {
+            background: #fff;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        #errorMessage {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 18px;
+        }
+
+        #infoMessage {
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <h2>Message Board</h2>
+
+    <!-- HJEM-KNAPP -->
+    <button id="homeBtn">Go to Home</button>
+
+    <!-- LOGIN-KNAPP SOM TAR DEG TIL loginUser.html -->
+    <button id="goToLoginBtn">Go to Login</button>
+
+    <!-- SKRIV MELDING -->
+    <h3>Write a message</h3>
     <form id="messageForm">
-        <input type="text" id="author" placeholder="Your name">
-        <br>
-        <textarea id="text" placeholder="Write a message..." required></textarea>
-        <br>
-        <button type="submit">Post message</button>
+        <input type="text" id="headingInput" placeholder="Heading">
+        <textarea id="messageInput" placeholder="Write a message..."></textarea>
+        <button id="postMessageBtn">Post Message</button>
+
+        <p id="errorMessage"></p>
+        <p id="infoMessage"></p>
     </form>
 
-    <h2>Messages</h2>
+    <h3>Messages</h3>
     <div id="messagesContainer"></div>
 
-    <script src="MessageBoard.js" type="module"></script>
+</div>
+
 </body>
 </html>
