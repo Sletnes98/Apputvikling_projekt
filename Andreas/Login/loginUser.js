@@ -28,7 +28,6 @@ async function loginUser(username, password) {
   }
 
   localStorage.setItem("userInfo", JSON.stringify(data.logindata));
-
   return data;
 }
 

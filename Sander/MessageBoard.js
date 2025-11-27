@@ -3,30 +3,43 @@
 // ------------------------------------------------------------
 const BASE_URL = "https://sukkergris.onrender.com";
 const GROUP_KEY = "ABKGYB48";
-const data = JSON.parse(localStorage.getItem("userInfo"));
-console.log(data.logindata);
 
 // ------------------------------------------------------------
 // HENT TOKEN FRA LOGIN
 // ------------------------------------------------------------
 function getToken() {
-    const data = JSON.parse(localStorage.getItem("userInfo"));
-    return data?.logindata?.token || null;
+    const data = localStorage.getItem("userInfo");
+    if (!data) return null;
+
+    try {
+        const userInfo = JSON.parse(data);
+        return userInfo?.token || null; // <-- BRUKER token direkte
+    } catch (e) {
+        console.error("Kunne ikke parse userInfo fra localStorage:", e);
+        return null;
+    }
 }
 
 // ------------------------------------------------------------
-// VIS MELDING TIL BRUKER
+// VIS FEIL / INFO
 // ------------------------------------------------------------
 function showError(msg) {
-    document.getElementById("errorMessage").textContent = msg;
-}
-
-function showInfo(msg) {
-    document.getElementById("infoMessage").textContent = msg;
+    const err = document.getElementById("errorMessage");
+    const info = document.getElementById("infoMessage");
+    if (err) err.textContent = msg || "";
+    if (info) info.textContent = "";
 }
 
 // ------------------------------------------------------------
-// HENT ALLE MELDINGER
+function showInfo(msg) {
+    const err = document.getElementById("errorMessage");
+    const info = document.getElementById("infoMessage");
+    if (err) err.textContent = "";
+    if (info) info.textContent = msg || "";
+}
+
+// ------------------------------------------------------------
+// LAST INN MELDINGER (Task 17)
 // ------------------------------------------------------------
 async function loadMessages() {
     const token = getToken();
@@ -40,31 +53,38 @@ async function loadMessages() {
 
     try {
         const response = await fetch(url, {
-            headers: { authorization: token }
+            headers: {
+                authorization: token
+            }
         });
 
         if (!response.ok) {
-            showError("Could not load messages.");
+            let msg = "Could not load messages. (" + response.status + ")";
+            try {
+                const errData = await response.json();
+                if (errData.msg) msg = errData.msg;
+            } catch {
+                // ignorer JSON-feil
+            }
+            showError(msg);
             return;
         }
 
         const messages = await response.json();
         displayMessages(messages);
-
-    } catch (err) {
-        showError("Network error: " + err.message);
+    } catch (error) {
+        showError("Network error: " + error.message);
     }
 }
 
 // ------------------------------------------------------------
-// VIS MELDINGER I LISTE + RATING
+// VIS MELDINGER + ENKEL RATING (Task 18)
 // ------------------------------------------------------------
-
 function displayMessages(messages) {
     const container = document.getElementById("messagesContainer");
     container.innerHTML = "";
 
-    if (!messages || messages.length === 0) {
+    if (!Array.isArray(messages) || messages.length === 0) {
         container.textContent = "No messages yet.";
         return;
     }
@@ -72,12 +92,14 @@ function displayMessages(messages) {
     messages.forEach(msg => {
         const box = document.createElement("div");
         box.className = "message";
-        console.log(msg);
+
+        // prøv begge felt, avhengig av hvordan serveren heter dem
+        const text = msg.message_text || msg.message || "";
 
         box.innerHTML = `
             <strong>${msg.heading}</strong><br>
-            ${msg.message}<br>
-            <small>By user ${msg.username} — Thread ${msg.thread}</small>
+            ${text}<br>
+            <small>By user ${msg.user_id} — Thread ${msg.thread}</small>
             <div class="rating">
                 Rate user:
                 <button data-user="${msg.user_id}" data-rating="1">⭐</button>
@@ -91,8 +113,8 @@ function displayMessages(messages) {
         container.appendChild(box);
     });
 
-    // Legg til event listeners for rating-knappene
-    document.querySelectorAll(".rating button").forEach(btn => {
+    // legg til klikk på rating-knappene
+    container.querySelectorAll(".rating button").forEach(btn => {
         btn.addEventListener("click", () => {
             const userId = btn.dataset.user;
             const rating = btn.dataset.rating;
@@ -100,59 +122,6 @@ function displayMessages(messages) {
         });
     });
 }
-
-// ------------------------------------------------------------
-// RATE EN BRUKER (MeowMeowBeenz)
-// ------------------------------------------------------------
-// ------------------------------------------------------------
-// RATE EN BRUKER (MeowMeowBeenz)
-// ------------------------------------------------------------
-async function rateUser(userId, rating) {
-    const token = getToken();
-    if (!token) {
-        showError("You must log in to rate users.");
-        return;
-    }
-
-    const url = `${BASE_URL}/users/beenz?key=${GROUP_KEY}`;
-    const body = {
-        userid: parseInt(userId, 10),
-        beenz: parseInt(rating, 10)
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: "PUT",
-            headers: {
-                "content-type": "application/json",
-                authorization: token
-            },
-            body: JSON.stringify(body)
-        });
-
-        if (!response.ok) {
-            // Les feilmelding fra serveren for debugging
-            let msg = "Could not rate user.";
-            try {
-                const errorData = await response.json();
-                if (errorData && errorData.msg) {
-                    msg += " " + errorData.msg;
-                }
-            } catch (_) {
-                // ignorer JSON-feil
-            }
-
-            showError(msg);
-            return;
-        }
-
-        showInfo(`You rated user ${userId} with ${rating} stars!`);
-
-    } catch (err) {
-        showError("Error rating user: " + err.message);
-    }
-}
-
 
 // ------------------------------------------------------------
 // POST NY MELDING
@@ -166,7 +135,10 @@ async function postMessage(heading, text) {
     }
 
     const url = `${BASE_URL}/msgboard/messages?key=${GROUP_KEY}`;
-    const body = { heading, message_text: text };
+    const body = {
+        heading: heading,
+        message_text: text
+    };
 
     try {
         const response = await fetch(url, {
@@ -179,51 +151,182 @@ async function postMessage(heading, text) {
         });
 
         if (!response.ok) {
-            showError("Could not post message.");
+            let msg = "Could not post message. (" + response.status + ")";
+            try {
+                const errData = await response.json();
+                if (errData.msg) msg = errData.msg;
+            } catch {
+                // ignorer JSON-feil
+            }
+            showError(msg);
             return;
         }
 
         showInfo("Message posted!");
-        loadMessages();
-
-    } catch (err) {
-        showError("Error posting message: " + err.message);
+        clearForm();
+        await loadMessages();
+    } catch (error) {
+        showError("Network error: " + error.message);
     }
 }
 
 // ------------------------------------------------------------
-// INIT
+// RATE EN BRUKER (MeowMeowBeenz)
 // ------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
+async function rateUser(userId, rating) {
+    const token = getToken();
 
-    // Gå til hjem
-    document.getElementById("homeBtn").addEventListener("click", () => {
-        window.location.href = "../Sander/HomePage.html";
-    });
+    if (!token) {
+        showError("You must log in to rate users.");
+        return;
+    }
 
-    // Gå til login-siden
-    document.getElementById("goToLoginBtn").addEventListener("click", () => {
-        window.location.href = "../Andreas/Login/loginUser.html";
-    });
+    const url = `${BASE_URL}/users/beenz?key=${GROUP_KEY}`;
+    const body = {
+        userid: Number(userId),
+        beenz: Number(rating)
+    };
 
-    // Submit melding
-    document.getElementById("postMessageBtn").addEventListener("click", (e) => {
-        e.preventDefault();
+    try {
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "content-type": "application/json",
+                authorization: token
+            },
+            body: JSON.stringify(body)
+        });
 
-        const heading = document.getElementById("headingInput").value.trim();
-        const text = document.getElementById("messageInput").value.trim();
-
-        if (!heading || !text) {
-            showError("Please fill in both fields.");
+        if (!response.ok) {
+            let msg = "Could not rate user. (" + response.status + ")";
+            try {
+                const errData = await response.json();
+                if (errData.msg) msg = errData.msg;
+            } catch {
+                // ignorer JSON-feil
+            }
+            showError(msg);
             return;
         }
 
-        postMessage(heading, text);
+        showInfo(`You rated user ${userId} with ${rating} stars!`);
+    } catch (error) {
+        showError("Error rating user: " + error.message);
+    }
+}
 
-        document.getElementById("headingInput").value = "";
-        document.getElementById("messageInput").value = "";
+// ------------------------------------------------------------
+// RYDD SKJEMA
+// ------------------------------------------------------------
+function clearForm() {
+    const headingInput = document.getElementById("headingInput");
+    const messageInput = document.getElementById("messageInput");
+
+    if (headingInput) headingInput.value = "";
+    if (messageInput) messageInput.value = "";
+}
+
+// ------------------------------------------------------------
+// NAV-KNAPPER
+// ------------------------------------------------------------
+function setupNavigation() {
+    const homeBtn = document.getElementById("homeBtn");
+    const cartBtn = document.getElementById("cartBtn");
+    const loginBtn = document.getElementById("loginBtn");
+
+    if (homeBtn) {
+        homeBtn.addEventListener("click", () => {
+            window.location.href = "HomePage.html";
+        });
+    }
+
+    if (cartBtn) {
+        cartBtn.addEventListener("click", () => {
+            window.location.href = "../Sondre_SC/ShoppingCart.html";
+        });
+    }
+
+    if (loginBtn) {
+        loginBtn.addEventListener("click", () => {
+            window.location.href = "../Andreas/Login/loginUser.html";
+        });
+    }
+}
+
+// ------------------------------------------------------------
+// BRUKERBILDE PÅ MESSAGE BOARD
+// ------------------------------------------------------------
+function setupUserThumbnailMessageBoard() {
+    const thumb = document.getElementById("userThumb");
+    if (!thumb) {
+        console.warn("Fant ikke #userThumb på MessageBoard");
+        return;
+    }
+
+    const data = localStorage.getItem("userInfo");
+    if (!data) {
+        // ikke innlogget
+        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+        thumb.style.cursor = "pointer";
+        thumb.addEventListener("click", () => {
+            window.location.href = "../Andreas/Login/loginUser.html";
+        });
+        return;
+    }
+
+    let userInfo;
+    try {
+        userInfo = JSON.parse(data);
+    } catch (e) {
+        console.error("Kunne ikke parse userInfo i MessageBoard:", e);
+        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+        return;
+    }
+
+    // Ikke innlogget / mangler token
+    if (!userInfo.token) {
+        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+        thumb.style.cursor = "pointer";
+        thumb.addEventListener("click", () => {
+            window.location.href = "../Andreas/Login/loginUser.html";
+        });
+        return;
+    }
+
+    const imageURL =
+        `https://sukkergris.onrender.com/images/${GROUP_KEY}/users/${userInfo.thumb}`;
+
+    console.log("MessageBoard thumb-url:", imageURL);
+
+    thumb.src = imageURL;
+    thumb.style.cursor = "pointer";
+    thumb.addEventListener("click", () => {
+        window.location.href = "../Jonathan/Task_16/editUserInfo.html";
     });
+}
 
-    // Last inn meldinger
+// ------------------------------------------------------------
+// INIT – KJØRES NÅR SIDEN LASTER
+// ------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    setupNavigation();
+    setupUserThumbnailMessageBoard();
     loadMessages();
+
+    const form = document.getElementById("messageForm");
+    if (form) {
+        form.addEventListener("submit", event => {
+            event.preventDefault();
+
+            const heading = document.getElementById("headingInput").value.trim();
+            const text = document.getElementById("messageInput").value.trim();
+
+            if (!heading || !text) {
+                showError("Please fill in both fields.");
+                return;
+            }
+
+            postMessage(heading, text);
+        });
+    }
 });
