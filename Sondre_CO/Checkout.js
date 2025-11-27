@@ -46,14 +46,14 @@ function renderStep1() {
   `;
 
   document.getElementById("nextBtn").addEventListener("click", () => {
-    const info = collectCustomerInfo();
+    const info = CustomerInfo();
     if (!info) return alert("Vennligst fyll ut alle feltene.");
     renderStep2(info);
   });
 }
 
 // ------------------------------------------------------------
-function collectCustomerInfo() {
+function CustomerInfo() {
   const fullname = document.getElementById("fullname").value.trim();
   const tlfnummer = document.getElementById("tlf").value.trim();
   const email = document.getElementById("email").value.trim();
