@@ -23,12 +23,12 @@ async function getAuthToken() {
 
 export const authToken = (await getAuthToken()).logindata.token;
 
-console.log(await getAuthToken());
+/* console.log(await getAuthToken());
 
 console.log("Username : " + username);
 console.log("Password : " + password);
 console.log("Group Key : " + groupKey);
-console.log("Authorization Token : " + authToken);
+console.log("Authorization Token : " + authToken); */
 
 //------------------------------------------------------------------------------------------------------------
 

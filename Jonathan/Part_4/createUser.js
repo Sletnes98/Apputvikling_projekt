@@ -15,13 +15,7 @@ document.getElementById("submit").addEventListener("click", async event => {
         const response = await createUser(username, password, fullName, street, city, zipCode, country, profilePicture.files[0]);
         console.log(response);
 
-
- /*            setTimeout(() => {
-            window.location.href = "../../../Andreas/Login/loginUser.html";
-            }, 300);
-       */
-
-     /*   if (response.ok) {
+       if (response.ok) {
 
             setTimeout(() => {
                 window.location.href = "../../../Andreas/Login/loginUser.html";
@@ -30,6 +24,6 @@ document.getElementById("submit").addEventListener("click", async event => {
 
         } else {
             alert("Something went wrong");
-        }  */
+        } 
 
 });

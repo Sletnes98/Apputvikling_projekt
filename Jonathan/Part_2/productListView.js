@@ -95,13 +95,14 @@ homeButton.addEventListener("click", event => {
 
     if(localStorage.getItem("userInfo")){
     userThumb.src = `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.thumb}`
-    };
+    
 
     userThumb.addEventListener("click", () => {
 
         window.location.href = "../../Jonathan/Task_16/editUserInfo.html";
 
     });
+};
 
 if (localStorage.getItem("userInfo") === null) {
     document.getElementById("userThumb").style.display = "none";

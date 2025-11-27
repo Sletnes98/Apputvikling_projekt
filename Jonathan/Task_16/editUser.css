@@ -1,11 +1,11 @@
-/* Generell styling */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
   }
   
-  /* Form */
+
   form {
     max-width: 400px;
     margin: 20px;
@@ -24,7 +24,6 @@ body {
     box-sizing: border-box;
   }
   
-  /* Buttons */
   button {
     background: #4a8ef0;
     border: none;
@@ -43,7 +42,6 @@ body {
     background: #3a7bd5;
   }
   
-  /* Bilder */
   img {
     max-width: 100%;
     border-radius: 8px;

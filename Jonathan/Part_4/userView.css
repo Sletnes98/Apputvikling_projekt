@@ -3,11 +3,11 @@
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 20px;
     padding: 20px;
-    max-width: none;        /* Fjernet sentrering og breddebegrensning */
-    margin: 0;              /* Fjerner mellomrom på sidene */
+    max-width: none;
+    margin: 0;              
 }
 
-/* Hvert brukerkort */
+
 .userContainer {
     background: #fff;
     border: 1px solid #ddd;
@@ -53,9 +53,6 @@
     transform: scale(1.1);
 }
 
-/* View for user form
-
-/* Søkeboks styling */
 .searchBox {
     width: 100%;
     max-width: 400px;

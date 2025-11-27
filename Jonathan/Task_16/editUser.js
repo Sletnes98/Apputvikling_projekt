@@ -146,10 +146,6 @@ document.getElementById("submit").addEventListener("click", async event => {
 
   
         const response = await editUser(username, fullName, street, city, zipCode, country, profilePicture.files[0]);
-        //console.log(response);
-
-        // Her blir jo ikke localstorage oppdatert
-        // Skal vi bare slette storage og be dem logge inn på nytt eller skal vi hente ut den nye dataen med engang?
 
 });
 
