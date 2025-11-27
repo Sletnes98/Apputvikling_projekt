@@ -5,153 +5,8 @@
     <title>Sukkergris – Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f7f7f7;
-        }
+    <link rel="stylesheet" href="HomePage.css">
 
-        header {
-            background: #3b0b17;
-            color: white;
-            padding: 1rem 1.5rem;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        main {
-            max-width: 960px;
-            margin: 1.5rem auto;
-            padding: 0 1rem 2rem;
-        }
-
-        /* ---------- SEARCH + CART TOP BAR ---------- */
-
-        .top-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-        }
-
-        .top-bar form {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 0.5rem;
-        }
-
-        input[type="text"] {
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            min-width: 220px;
-        }
-
-        button {
-            padding: 0.5rem 0.9rem;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background: #e0593c;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #3b0b17;
-            border: 1px solid #3b0b17;
-        }
-
-        /* ---------- CATEGORY GRID ---------- */
-
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1rem;
-        }
-
-        .category-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-        }
-
-        .category-card h2 {
-            margin: 0 0 0.4rem;
-            font-size: 1.1rem;
-        }
-
-        .category-card p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #444;
-        }
-
-        .category-card a {
-            display: inline-block;
-            margin-top: 0.7rem;
-            font-size: 0.85rem;
-            text-decoration: none;
-            color: #e0593c;
-        }
-
-        .message {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #b00020;
-        }
-
-/* NAVBAR */
-.top-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #3a001f;
-    padding: 15px 25px;
-    color: white;
-}
-
-.logo {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-}
-
-.auth-buttons {
-    display: flex;
-    gap: 12px;
-}
-
-/* Knapper */
-.auth-btn {
-    background-color: #444;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.auth-btn:hover {
-    background-color: black;
-}
-
-
-    </style>
 </head>
 
 <body>
@@ -159,18 +14,20 @@
 <header class="top-nav">
     <h1 class="logo">Sukkergris Webshop</h1>
 
-    <div class="auth-buttons">
+        <div class="auth-buttons">
         <button id="forumButton" class="auth-btn">Go to forum</button>
         <button id="cartButton" class="auth-btn">Go to shopping cart</button>
         <button id="loginBtn" class="auth-btn">Login</button>
         <button id="signupBtn" class="auth-btn">Sign up</button>
+
+    <img id="userThumb">
 
     </div>
 </header>
 
 <main>
 
-    <!-- ---------------- SEARCH + CART BAR + forum---------------- -->
+    <!-- ---------------- SEARCH + CART BAR ---------------- -->
     <section class="top-bar">
         <form id="searchForm">
             <input
