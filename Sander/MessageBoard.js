@@ -8,8 +8,16 @@ const GROUP_KEY = "ABKGYB48";
 // HENT TOKEN FRA LOGIN
 // ------------------------------------------------------------
 function getToken() {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    return userInfo?.logindata?.token || null;
+    const data = localStorage.getItem("userInfo");
+    if (!data) return null;
+
+    try {
+        const userInfo = JSON.parse(data);
+        return userInfo?.token || null; // <-- BRUKER token direkte
+    } catch (e) {
+        console.error("Kunne ikke parse userInfo fra localStorage:", e);
+        return null;
+    }
 }
 
 // ------------------------------------------------------------
@@ -250,27 +258,48 @@ function setupNavigation() {
 // ------------------------------------------------------------
 function setupUserThumbnailMessageBoard() {
     const thumb = document.getElementById("userThumb");
-    if (!thumb) return;
+    if (!thumb) {
+        console.warn("Fant ikke #userThumb på MessageBoard");
+        return;
+    }
 
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-    if (!userInfo || !userInfo.logindata) {
+    const data = localStorage.getItem("userInfo");
+    if (!data) {
+        // ikke innlogget
         thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
         thumb.style.cursor = "pointer";
-
         thumb.addEventListener("click", () => {
             window.location.href = "../Andreas/Login/loginUser.html";
         });
+        return;
+    }
 
+    let userInfo;
+    try {
+        userInfo = JSON.parse(data);
+    } catch (e) {
+        console.error("Kunne ikke parse userInfo i MessageBoard:", e);
+        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+        return;
+    }
+
+    // Ikke innlogget / mangler token
+    if (!userInfo.token) {
+        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+        thumb.style.cursor = "pointer";
+        thumb.addEventListener("click", () => {
+            window.location.href = "../Andreas/Login/loginUser.html";
+        });
         return;
     }
 
     const imageURL =
-        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`;
+        `https://sukkergris.onrender.com/images/${GROUP_KEY}/users/${userInfo.thumb}`;
+
+    console.log("MessageBoard thumb-url:", imageURL);
 
     thumb.src = imageURL;
     thumb.style.cursor = "pointer";
-
     thumb.addEventListener("click", () => {
         window.location.href = "../Jonathan/Task_16/editUserInfo.html";
     });

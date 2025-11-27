@@ -160,15 +160,22 @@ function setupNavigation() {
 // ------------------------------------------------------------
 // USER LOGIN STATUS + THUMBNAIL
 // ------------------------------------------------------------
+// ------------------------------------------------------------
+// USER LOGIN STATUS + THUMBNAIL
+// ------------------------------------------------------------
 function setupUserThumbnail() {
     const thumb = document.getElementById("userThumb");
-    if (!thumb) return; // hvis siden ikke har thumb
+    if (!thumb) {
+        console.warn("Fant ikke #userThumb i DOM-en");
+        return; // siden har ikke thumb
+    }
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    console.log("setupUserThumbnail -> userInfo:", userInfo);
 
     // Ikke innlogget → vis login-ikon
-    if (!userInfo || !userInfo.logindata) {
-        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // login ikon
+    if (!userInfo || !userInfo.token) {
+        thumb.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // login-ikon
         thumb.style.cursor = "pointer";
 
         thumb.addEventListener("click", () => {
@@ -180,15 +187,19 @@ function setupUserThumbnail() {
 
     // Innlogget → vis profilbilde
     const imageURL =
-        `https://sukkergris.onrender.com/images/ABKGYB48/users/${userInfo.logindata.thumb}`;
+        `https://sukkergris.onrender.com/images/${GROUP_KEY}/users/${userInfo.thumb}`;
+
+    console.log("Setter profilbilde til:", imageURL);
 
     thumb.src = imageURL;
     thumb.style.cursor = "pointer";
 
     thumb.addEventListener("click", () => {
+        // tilpass sti om nødvendig
         window.location.href = "../../Jonathan/Task_16/editUserInfo.html";
     });
 }
+
 
 // ------------------------------------------------------------
 // Init – kjører når siden er lastet
