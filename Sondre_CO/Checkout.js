@@ -220,3 +220,5 @@ function getFinalPrice(item) {
     if (!item.discount || item.discount <= 0) return item.price;
     return item.price - (item.price * item.discount / 100);
 }
+
+// ------------------------------------------------------------test
