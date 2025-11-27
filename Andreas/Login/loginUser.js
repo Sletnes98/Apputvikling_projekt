@@ -42,8 +42,7 @@ async function loginUser(username, password) {
   }
 
   // Lagre hele svaret slik at andre filer kan hente ut ting på samme måte
-  localStorage.setItem("userInfo", JSON.stringify(data));
-
+  localStorage.setItem("userInfo", JSON.stringify(data.logindata));
   return data;
 }
 
